@@ -126,43 +126,52 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   }
 
   Widget _expandView() {
-    return Container(
-      height: 64.0 * expandAnim.value,
-      color: Colors.amber,
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
+    return Column(
+      children: <Widget>[
+        Container(
+          height: 64.0 * expandAnim.value,
+          color: Colors.amber,
+          child: Row(
+            children: List.generate(3, (i) {
+              List<String> titles = ['全部', '只看原创', '只看想法'];
+              String title = titles[i];
+              return Expanded(
+                flex: 1,
+                child: Container(
+                  height: 36,
+                  margin: EdgeInsets.all(8),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: FlatButton(
+                      child: Text(title),
+                      color: Colors.white,
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+        isExpanded == true ?
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                isExpanded = !isExpanded;
+                if (isExpanded == true) {
+                  expandAnim.forward();
+                } else {
+                  expandAnim.reverse();
+                }
+              });
+            },
             child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0),
-                  color: Colors.white
-              ),
-              height: 32,
+              color: Color.fromARGB((50.0 * expandAnim.value).toInt(), 0, 0, 0),
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0),
-                  color: Colors.white
-              ),
-              height: 32,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0),
-                  color: Colors.white
-              ),
-              height: 32,
-            ),
-          ),
-        ],
-      ),
+        ) : Container(),
+      ],
     );
   }
 }
