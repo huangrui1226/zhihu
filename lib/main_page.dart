@@ -9,14 +9,21 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   TabController controller;
 
+  bool isExpanded = false; // 关注按钮下方的View
+  AnimationController expandAnim; // 展开关注按钮下方View的动画
+
   @override
   void initState() {
     controller = TabController(
-      length: 4,
+      length: 3,
       vsync: this,
     );
-    controller.addListener(() {
-      print('${controller.index}');
+    expandAnim = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+    expandAnim.addListener(() {
+      setState(() {});
     });
     super.initState();
   }
@@ -46,7 +53,19 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                       child: Row(
                         children: <Widget>[
                           Text('关注'),
-                          Icon(Icons.arrow_drop_down),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isExpanded = !isExpanded;
+                                if (isExpanded == true) {
+                                  expandAnim.forward();
+                                } else {
+                                  expandAnim.reverse();
+                                }
+                              });
+                            },
+                            child: isExpanded == true ? Icon(Icons.arrow_drop_up) : Icon(Icons.arrow_drop_down),
+                          ),
                         ],
                         mainAxisAlignment: MainAxisAlignment.center,
                       ),
@@ -55,42 +74,23 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ),
                 Tab(text: '推荐'),
                 Tab(text: '热榜'),
-                ExpansionPanelList(
-                  children: [
-                    ExpansionPanel(
-                      headerBuilder: (context, isExpanded) {
-                        Color color = isExpanded ? Colors.red : Colors.blue;
-                        return Container(
-                          width: 32,
-                          height: 32,
-                          color: color,
-                        );
-                      },
-                      body: Container(
-                        height: 32,
-                        width: 32,
-                        color: Colors.green,
-                      ),
-                      canTapOnHeader: true,
-                    ),
-                  ],
-                  expansionCallback: (index, isOk) {
-
-                  },
-                ),
               ],
               controller: controller,
               labelColor: Colors.black,
             ),
             Expanded(
-              child: TabBarView(
+              child: Stack(
                 children: <Widget>[
-                  Container(color: Colors.blue),
-                  Container(color: Colors.green),
-                  Container(color: Colors.red),
-                  Container(color: Colors.yellow),
+                  TabBarView(
+                    children: <Widget>[
+                      Container(color: Colors.blue),
+                      Container(color: Colors.green),
+                      Container(color: Colors.red),
+                    ],
+                    controller: controller,
+                  ),
+                  _expandView(),
                 ],
-                controller: controller,
               ),
             ),
           ],
@@ -119,6 +119,47 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             width: 44,
             height: 44,
             color: Colors.white,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _expandView() {
+    return Container(
+      height: 64.0 * expandAnim.value,
+      color: Colors.amber,
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: Colors.white
+              ),
+              height: 32,
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: Colors.white
+              ),
+              height: 32,
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: Colors.white
+              ),
+              height: 32,
+            ),
           ),
         ],
       ),
