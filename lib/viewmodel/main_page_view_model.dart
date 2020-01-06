@@ -16,7 +16,7 @@ class MainPageViewModel {
     });
   }
 
-  MainPageViewModel.dispose() {
+  dispose() {
     this.expandAnim.dispose();
   }
 

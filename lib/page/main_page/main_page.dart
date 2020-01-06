@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:zhihu/page/main_page/main_page_focus_view.dart';
+import 'package:zhihu/page/main_page/main_page_recommand_view.dart';
 import 'package:zhihu/viewmodel/main_page_view_model.dart';
 
 class MainPage extends StatefulWidget {
@@ -33,6 +35,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    viewModel.dispose();
     controller.dispose();
     super.dispose();
   }
@@ -45,32 +48,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         child: Column(
           children: <Widget>[
             TabBar(
-              tabs: <Widget>[
-                Tab(
-                  child: GestureDetector(
-                    onTap: () {
-                      controller.animateTo(0);
-                    },
-                    child: Container(
-                      color: Colors.transparent,
-                      child: Row(
-                        children: <Widget>[
-                          Text('关注'),
-                          GestureDetector(
-                            onTap: viewModel.onFocusClicked,
-                            child: viewModel.isExpanded == true
-                                ? Icon(Icons.arrow_drop_up)
-                                : Icon(Icons.arrow_drop_down),
-                          ),
-                        ],
-                        mainAxisAlignment: MainAxisAlignment.center,
-                      ),
-                    ),
-                  ),
-                ),
-                Tab(text: '推荐'),
-                Tab(text: '热榜'),
-              ],
+              tabs: _tabList(),
               controller: controller,
               labelColor: Colors.black,
             ),
@@ -79,8 +57,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 children: <Widget>[
                   TabBarView(
                     children: <Widget>[
-                      Container(color: Colors.blue),
-                      Container(color: Colors.green),
+                      MainPageFocusView(),
+                      MainPageRecmndView(),
                       Container(color: Colors.red),
                     ],
                     controller: controller,
@@ -162,5 +140,33 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             : Container(),
       ],
     );
+  }
+
+  List<Tab> _tabList() {
+    return [Tab(
+      child: GestureDetector(
+        onTap: () {
+          controller.animateTo(0);
+        },
+        child: Container(
+          color: Colors.transparent,
+          child: Row(
+            children: <Widget>[
+              Text('关注'),
+              GestureDetector(
+                onTap: viewModel.onFocusClicked,
+                child: viewModel.isExpanded == true
+                    ? Icon(Icons.arrow_drop_up)
+                    : Icon(Icons.arrow_drop_down),
+              ),
+            ],
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        ),
+      ),
+    ),
+      Tab(text: '推荐'),
+      Tab(text: '热榜'),
+    ];
   }
 }
