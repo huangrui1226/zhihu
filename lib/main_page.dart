@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zhihu/viewmodel/main_page_view_model.dart';
 
 class MainPage extends StatefulWidget {
   static String rName = 'MainPage';
@@ -9,8 +10,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   TabController controller;
 
-  bool isExpanded = false; // 关注按钮下方的View
-  AnimationController expandAnim; // 展开关注按钮下方View的动画
+  MainPageViewModel viewModel;
 
   @override
   void initState() {
@@ -18,13 +18,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       length: 3,
       vsync: this,
     );
-    expandAnim = AnimationController(
-      duration: Duration(milliseconds: 300),
-      vsync: this,
+    viewModel = MainPageViewModel(
+      refresh: () {
+        setState(() {});
+      },
+      isExpanded: false,
+      expandAnim: AnimationController(
+        duration: Duration(milliseconds: 300),
+        vsync: this,
+      ),
     );
-    expandAnim.addListener(() {
-      setState(() {});
-    });
     super.initState();
   }
 
@@ -54,17 +57,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         children: <Widget>[
                           Text('关注'),
                           GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isExpanded = !isExpanded;
-                                if (isExpanded == true) {
-                                  expandAnim.forward();
-                                } else {
-                                  expandAnim.reverse();
-                                }
-                              });
-                            },
-                            child: isExpanded == true ? Icon(Icons.arrow_drop_up) : Icon(Icons.arrow_drop_down),
+                            onTap: viewModel.onFocusClicked,
+                            child: viewModel.isExpanded == true
+                                ? Icon(Icons.arrow_drop_up)
+                                : Icon(Icons.arrow_drop_down),
                           ),
                         ],
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -129,7 +125,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return Column(
       children: <Widget>[
         Container(
-          height: 64.0 * expandAnim.value,
+          height: 64.0 * viewModel.expandAnim.value,
           color: Colors.amber,
           child: Row(
             children: List.generate(3, (i) {
@@ -153,24 +149,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             }),
           ),
         ),
-        isExpanded == true ?
-        Expanded(
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                isExpanded = !isExpanded;
-                if (isExpanded == true) {
-                  expandAnim.forward();
-                } else {
-                  expandAnim.reverse();
-                }
-              });
-            },
-            child: Container(
-              color: Color.fromARGB((50.0 * expandAnim.value).toInt(), 0, 0, 0),
-            ),
-          ),
-        ) : Container(),
+        viewModel.isExpanded == true
+            ? Expanded(
+                child: GestureDetector(
+                  onTap: viewModel.onFocusClicked,
+                  child: Container(
+                    color: Color.fromARGB(
+                        (50.0 * viewModel.expandAnim.value).toInt(), 0, 0, 0),
+                  ),
+                ),
+              )
+            : Container(),
       ],
     );
   }
