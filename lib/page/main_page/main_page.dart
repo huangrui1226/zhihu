@@ -54,6 +54,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               controller: controller,
               labelColor: Colors.black,
             ),
+            Divider(height: 1, color: Color(0xFFD2D2D2)),
             Expanded(
               child: Stack(
                 children: <Widget>[
@@ -135,8 +136,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return Column(
       children: <Widget>[
         Container(
-          height: 64.0 * viewModel.expandAnim.value,
-          color: Colors.amber,
+          height: 61.0 * viewModel.expandAnim.value,
+          color: Colors.white,
           child: Row(
             children: List.generate(3, (i) {
               List<String> titles = ['全部', '只看原创', '只看想法'];
@@ -144,13 +145,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               return Expanded(
                 flex: 1,
                 child: Container(
-                  height: 36,
-                  margin: EdgeInsets.all(8),
+                  height: 34,
+                  margin: i == 2 ? EdgeInsets.symmetric(horizontal: 14) : EdgeInsets.only(left: 14),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(18),
                     child: FlatButton(
                       child: Text(title),
-                      color: Colors.white,
+                      color: Color(0xFFF5F5F5),
                       onPressed: () {},
                     ),
                   ),
