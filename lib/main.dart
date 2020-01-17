@@ -19,7 +19,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         brightness: Brightness.light,
         appBarTheme: AppBarTheme(
-          brightness: Brightness.dark,
+          brightness: Brightness.light,
           color: Colors.white,
           elevation: 0,
           iconTheme: IconThemeData(color: Colors.black),

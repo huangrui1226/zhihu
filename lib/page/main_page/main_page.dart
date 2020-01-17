@@ -3,6 +3,7 @@ import 'package:zhihu/page/main_page/main_page_focus_view.dart';
 import 'package:zhihu/page/main_page/main_page_hot.dart';
 import 'package:zhihu/page/main_page/main_page_recommand_view.dart';
 import 'package:zhihu/viewmodel/main_page_view_model.dart';
+import 'package:zhihu/widget/my_tabbar.dart';
 
 class MainPage extends StatefulWidget {
   static String rName = 'MainPage';
@@ -48,7 +49,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       body: Container(
         child: Column(
           children: <Widget>[
-            TabBar(
+            MyTabBar(
               tabs: _tabList(),
               controller: controller,
               labelColor: Colors.black,
@@ -56,7 +57,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             Expanded(
               child: Stack(
                 children: <Widget>[
-                  TabBarView(
+                  MyTabBarView(
                     children: <Widget>[
                       MainPageFocusView(),
                       MainPageRecmndView(),
@@ -92,8 +93,26 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           Expanded(
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 8.0),
-              color: Colors.white,
-              height: 44,
+              decoration: BoxDecoration(
+                color: Color(0xFFF0F0F0),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              height: 34,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: Image.asset(
+                      'assets/images/search.png',
+                      width: 20,
+                      height: 20,
+                    ),
+                  ),
+                  Container(
+                    child: Text('我国人均GDP突破一万美元'),
+                  ),
+                ],
+              ),
             ),
           ),
           Container(
@@ -145,7 +164,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 child: GestureDetector(
                   onTap: viewModel.onFocusClicked,
                   child: Container(
-                    color: Color.fromARGB((50.0 * viewModel.expandAnim.value).toInt(), 0, 0, 0),
+                    color: Color.fromARGB(
+                      (50.0 * viewModel.expandAnim.value).toInt(),
+                      0,
+                      0,
+                      0,
+                    ),
                   ),
                 ),
               )
@@ -154,21 +178,22 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     );
   }
 
-  List<Tab> _tabList() {
+  List<MyTab> _tabList() {
     return [
-      Tab(
+      MyTab(
         child: GestureDetector(
           onTap: () {
             controller.animateTo(0);
           },
           child: Container(
-            color: Colors.transparent,
             child: Row(
               children: <Widget>[
                 Text('关注'),
                 GestureDetector(
                   onTap: viewModel.onFocusClicked,
-                  child: viewModel.isExpanded == true ? Icon(Icons.arrow_drop_up) : Icon(Icons.arrow_drop_down),
+                  child: viewModel.isExpanded == true
+                      ? Icon(Icons.arrow_drop_up)
+                      : Icon(Icons.arrow_drop_down),
                 ),
               ],
               mainAxisAlignment: MainAxisAlignment.center,
@@ -176,8 +201,20 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           ),
         ),
       ),
-      Tab(text: '推荐'),
-      Tab(text: '热榜'),
+      MyTab(
+        child: Container(
+          child: Center(
+            child: Text('推荐'),
+          ),
+        ),
+      ),
+      MyTab(
+        child: Container(
+          child: Center(
+            child: Text('热榜'),
+          ),
+        ),
+      ),
     ];
   }
 }
