@@ -76,8 +76,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   Widget _appBar() {
     return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
       title: Row(
         children: <Widget>[
           Container(

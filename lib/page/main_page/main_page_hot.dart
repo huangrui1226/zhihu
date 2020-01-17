@@ -20,7 +20,11 @@ class _MainPageHotState extends State<MainPageHot> {
       children: <Widget>[
         _titleView(),
         Expanded(
-          child: ListView(),
+          child: ListView(
+            children: <Widget>[
+              _cellView(),
+            ],
+          ),
         ),
       ],
     );
@@ -59,6 +63,7 @@ class HotModel {
     json['title'] = title;
     json['subTitle'] = subTitle;
     json['imageUrl'] = imageUrl;
+    return json;
   }
 
   static test() {

@@ -123,6 +123,7 @@ class _RecommandModel {
     map['subTitle'] = 'subTitle';
     map['greatCount'] = 'greatCount';
     map['discussCount'] = 'discussCount';
+    return map;
   }
 
   static List<_RecommandModel> test(int count) {
