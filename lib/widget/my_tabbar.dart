@@ -68,7 +68,7 @@ class MyTab extends StatelessWidget {
     this.icon,
     this.child,
   }) : assert(text != null || child != null || icon != null),
-       assert(!(text != null && null != child)), // TODO(goderbauer): https://github.com/dart-lang/sdk/issues/34180
+       assert(!(text != null && null != child)),
        super(key: key);
 
   /// The text to display as the tab's label.
@@ -420,8 +420,6 @@ class _IndicatorPainter extends CustomPainter {
   }
 
   static bool _tabOffsetsEqual(List<double> a, List<double> b) {
-    // TODO(shihaohong): The following null check should be replaced when a fix
-    // for https://github.com/flutter/flutter/issues/40014 is available.
     if (a == null || b == null || a.length != b.length)
       return false;
     for (int i = 0; i < a.length; i += 1) {

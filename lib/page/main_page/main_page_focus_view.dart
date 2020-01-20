@@ -12,13 +12,15 @@ class _MainPageFocusViewState extends State<MainPageFocusView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFFEFEFEF),
+      color: Color(0xFFF5F5F5),
       child: ListView(
         children: List.generate(10, (i) {
           return Container(
             color: Colors.white,
             margin: EdgeInsets.only(bottom: 8),
-            child: _CellView(model: modelList[i],),
+            child: _CellView(
+              model: modelList[i],
+            ),
           );
         }),
       ),
@@ -34,14 +36,28 @@ class _CellView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.symmetric(vertical: 15.5, horizontal: 14),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _userView(),
           Container(
-            child: Text(model.title),
+            margin: EdgeInsets.only(bottom: 6),
+            child: Text(
+              model.title,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
           Container(
-            child: Text(model.subTitle),
+            margin: EdgeInsets.only(bottom: 14),
+            child: Text(model.subTitle, style: TextStyle(
+              color: Colors.black87,
+              fontSize: 15,
+            ),),
           ),
           _infoView(),
         ],
@@ -51,22 +67,34 @@ class _CellView extends StatelessWidget {
 
   Widget _userView() {
     return Container(
+      margin: EdgeInsets.only(bottom: 10),
       child: Row(
         children: <Widget>[
           // 头像
           Container(
-            width: 32,
-            height: 32,
+            margin: EdgeInsets.only(right: 9),
+            width: 33,
+            height: 33,
             color: Colors.red,
           ),
           Container(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  child: Text(model.username),
+                  child: Text(
+                    model.username,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ),
                 Container(
-                  child: Text(model.lastGreatTime),
+                  child: Text(
+                    model.lastGreatTime,
+                    style: TextStyle(color: Colors.black38, fontSize: 12),
+                  ),
                 ),
               ],
             ),
@@ -81,16 +109,19 @@ class _CellView extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Container(
-            width: 16,
-            height: 16,
+            margin: EdgeInsets.only(right: 6),
+            width: 20,
+            height: 20,
             color: Colors.red,
           ),
           Container(
             child: Text(model.greatCount.toString()),
+            margin: EdgeInsets.only(right: 32),
           ),
           Container(
-            width: 16,
-            height: 16,
+            margin: EdgeInsets.only(right: 6),
+            width: 20,
+            height: 20,
             color: Colors.red,
           ),
           Container(
@@ -119,7 +150,7 @@ class _FocusModel {
     this.subTitle,
     this.greatCount,
     this.discussCount,
-});
+  });
 
   _FocusModel.fromJson(Map<String, dynamic> json) {
     iconUrl = json['iconUrl'];
@@ -147,10 +178,11 @@ class _FocusModel {
     return List.generate(count, (i) {
       return _FocusModel(
         iconUrl: '',
-        username: '用户',
-        lastGreatTime: '刚刚',
-        title: '随机标题',
-        subTitle: '随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题',
+        username: '阿里云云栖号',
+        lastGreatTime: '33分钟前·发表了文章',
+        title: '共享充电宝竟然是这样管理的，看咻电科技如何在云端管理千万设备',
+        subTitle:
+            '公司介绍我们公司是咻点科技是国内领先的科技创新型企业，聚焦高新技术研发应用和智慧场景社交。分公司覆盖国内21个省市，市场运营团队共1000+人，独立自处...',
         greatCount: Random().nextInt(9999),
         discussCount: Random().nextInt(99999),
       );
