@@ -2,7 +2,17 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+enum FocusViewType {
+  all,        // 全部
+  originate,  // 只看原创
+  idea,       // 只看想法
+}
+
 class MainPageFocusView extends StatefulWidget {
+  final FocusViewType type;
+
+  MainPageFocusView({Key key, this.type}) : super(key: key);
+
   @override
   _MainPageFocusViewState createState() => _MainPageFocusViewState();
 }
@@ -54,10 +64,13 @@ class _CellView extends StatelessWidget {
           ),
           Container(
             margin: EdgeInsets.only(bottom: 14),
-            child: Text(model.subTitle, style: TextStyle(
-              color: Colors.black87,
-              fontSize: 15,
-            ),),
+            child: Text(
+              model.subTitle,
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 15,
+              ),
+            ),
           ),
           _infoView(),
         ],
@@ -71,11 +84,14 @@ class _CellView extends StatelessWidget {
       child: Row(
         children: <Widget>[
           // 头像
-          Container(
-            margin: EdgeInsets.only(right: 9),
-            width: 33,
-            height: 33,
-            color: Colors.red,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(15.5),
+            child: Container(
+              margin: EdgeInsets.only(right: 9),
+              width: 33,
+              height: 33,
+              child: Image.asset('assets/images/example_user_logo.png'),
+            ),
           ),
           Container(
             child: Column(
@@ -106,13 +122,14 @@ class _CellView extends StatelessWidget {
 
   Widget _infoView() {
     return Container(
+      margin: EdgeInsets.only(left: 2),
       child: Row(
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(right: 6),
-            width: 20,
-            height: 20,
-            color: Colors.red,
+            width: 18,
+            height: 18,
+            child: Image.asset('assets/images/focus_support.png'),
           ),
           Container(
             child: Text(model.greatCount.toString()),
@@ -120,9 +137,9 @@ class _CellView extends StatelessWidget {
           ),
           Container(
             margin: EdgeInsets.only(right: 6),
-            width: 20,
-            height: 20,
-            color: Colors.red,
+            width: 18,
+            height: 18,
+            child: Image.asset('assets/images/focus_discuss.png'),
           ),
           Container(
             child: Text(model.discussCount.toString()),

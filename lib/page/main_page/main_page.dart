@@ -16,6 +16,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   MainPageViewModel viewModel;
 
+  FocusViewType _focusViewType = FocusViewType.all;
+
   @override
   void initState() {
     controller = TabController(
@@ -60,7 +62,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 children: <Widget>[
                   MyTabBarView(
                     children: <Widget>[
-                      MainPageFocusView(),
+                      MainPageFocusView(type: _focusViewType),
                       MainPageRecmndView(),
                       MainPageHot(),
                     ],
@@ -144,18 +146,49 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               String title = titles[i];
               return Expanded(
                 flex: 1,
-                child: Container(
-                  height: 34,
-                  margin: i == 2 ? EdgeInsets.symmetric(horizontal: 14) : EdgeInsets.only(left: 14),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(18),
-                    child: FlatButton(
-                      child: Text(title),
-                      color: Color(0xFFF5F5F5),
-                      onPressed: () {},
+                child: () {
+                  Color bgColor;
+                  Color titleColor;
+
+                  if (FocusViewType.values[i] == _focusViewType) {
+                    bgColor = Color(0xFFE9F5FF);
+                    titleColor = Color(0xFF0084FE);
+                  } else {
+                    bgColor = Color(0xFFF5F5F5);
+                    titleColor = Colors.black45;
+                  }
+                  
+                  return Container(
+                    height: 34,
+                    margin: i == 2
+                        ? EdgeInsets.symmetric(horizontal: 14)
+                        : EdgeInsets.only(left: 14),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(18),
+                      child: FlatButton(
+                        onPressed: () {
+                          if (i == 0) {
+                            // 全部
+                            _focusViewType = FocusViewType.all;
+                          } else if (i == 1) {
+                            // 只看原创
+                            _focusViewType = FocusViewType.originate;
+                          } else {
+                            // 只看想法
+                            _focusViewType = FocusViewType.idea;
+                          }
+                          setState(() {});
+                          viewModel.onFocusClicked();
+                        },
+                        child: Text(
+                          title,
+                          style: TextStyle(color: titleColor),
+                        ),
+                        color: bgColor,
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                }(),
               );
             }),
           ),
