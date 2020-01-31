@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class MainPageHot extends StatefulWidget {
+class MainPageHotView extends StatefulWidget {
   @override
-  _MainPageHotState createState() => _MainPageHotState();
+  _MainPageHotViewState createState() => _MainPageHotViewState();
 }
 
-class _MainPageHotState extends State<MainPageHot> {
+class _MainPageHotViewState extends State<MainPageHotView> {
   List<HotModel> list = [];
 
   @override

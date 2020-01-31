@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zhihu/page/main_page/main_page_focus_view.dart';
-import 'package:zhihu/page/main_page/main_page_hot.dart';
+import 'package:zhihu/page/main_page/main_page_hot_view.dart';
 import 'package:zhihu/page/main_page/main_page_recommand_view.dart';
 import 'package:zhihu/viewmodel/main_page_view_model.dart';
 import 'package:zhihu/widget/my_tabbar.dart';
@@ -12,18 +12,12 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
-  TabController controller;
-
   MainPageViewModel viewModel;
 
   FocusViewType _focusViewType = FocusViewType.all;
 
   @override
   void initState() {
-    controller = TabController(
-      length: 3,
-      vsync: this,
-    );
     viewModel = MainPageViewModel(
       refresh: () {
         setState(() {});
@@ -33,6 +27,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         duration: Duration(milliseconds: 300),
         vsync: this,
       ),
+      controller: TabController(
+        length: 3,
+        vsync: this,
+      ),
     );
     super.initState();
   }
@@ -40,7 +38,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   @override
   void dispose() {
     viewModel.dispose();
-    controller.dispose();
     super.dispose();
   }
 
@@ -53,7 +50,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           children: <Widget>[
             MyTabBar(
               tabs: _tabList(),
-              controller: controller,
+              controller: viewModel.controller,
               labelColor: Colors.black,
             ),
             Divider(height: 1, color: Color(0xFFD2D2D2)),
@@ -64,9 +61,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     children: <Widget>[
                       MainPageFocusView(type: _focusViewType),
                       MainPageRecmndView(),
-                      MainPageHot(),
+                      MainPageHotView(),
                     ],
-                    controller: controller,
+                    controller: viewModel.controller,
                   ),
                   _expandView(),
                 ],
@@ -157,7 +154,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     bgColor = Color(0xFFF5F5F5);
                     titleColor = Colors.black45;
                   }
-                  
+
                   return Container(
                     height: 34,
                     margin: i == 2
@@ -217,7 +214,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       MyTab(
         child: GestureDetector(
           onTap: () {
-            controller.animateTo(0);
+            viewModel.controller.animateTo(0);
           },
           child: Container(
             child: Row(
