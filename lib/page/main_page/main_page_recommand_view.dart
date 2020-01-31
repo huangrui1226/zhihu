@@ -18,7 +18,9 @@ class _MainPageRecmndViewState extends State<MainPageRecmndView> {
           return Container(
             color: Colors.white,
             margin: EdgeInsets.only(bottom: 8),
-            child: _RecommandCell(model: modelList[i],),
+            child: _CellView(
+              model: modelList[i],
+            ),
           );
         }),
       ),
@@ -26,60 +28,92 @@ class _MainPageRecmndViewState extends State<MainPageRecmndView> {
   }
 }
 
-class _RecommandCell extends StatelessWidget {
+class _CellView extends StatelessWidget {
   final _RecommandModel model;
 
-  _RecommandCell({this.model});
+  _CellView({this.model});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.symmetric(vertical: 15.5, horizontal: 14),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            child: Text(model.title),
+            margin: EdgeInsets.only(bottom: 6),
+            child: Text(
+              model.title,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
+          _userView(),
           Container(
-            child: Row(
-              children: <Widget>[
-                Container(
-                  width: 32,
-                  height: 32,
-                  color: Colors.red,
-                ),
-                Text(model.userSign),
-              ],
+            child: Text(
+              model.subTitle,
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 15,
+              ),
+            ),
+          ),
+          _infoView(),
+        ],
+      ),
+    );
+  }
+
+  Widget _userView() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 10),
+      child: Row(
+        children: <Widget>[
+          // 头像
+          ClipRRect(
+            borderRadius: BorderRadius.circular(15.5),
+            child: Container(
+              margin: EdgeInsets.only(right: 9),
+              width: 20,
+              height: 20,
+              child: Image.asset('assets/images/example_user_logo.png'),
             ),
           ),
           Container(
-            child: Text(model.subTitle),
+            margin: EdgeInsets.only(right: 9),
+            child: Text(
+              model.username,
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
-          Container(
-            child: Row(
-              children: <Widget>[
-                Container(
-                  width: 16,
-                  height: 16,
-                  color: Colors.red,
-                ),
-                Container(
-                  child: Text(model.greatCount.toString()),
-                ),
-                Container(
-                  child: Text('•'),
-                ),
-                Container(
-                  width: 16,
-                  height: 16,
-                  color: Colors.red,
-                ),
-                Container(
-                  child: Text(model.discussCount.toString()),
-                ),
-              ],
+          Expanded(
+            child: Container(
+              child: Text(
+                model.userSign,
+                style: TextStyle(color: Colors.black38, fontSize: 12),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _infoView() {
+    return Container(
+      margin: EdgeInsets.only(left: 2, top: 8),
+      child: Text(
+        '${model.greatCount} 赞同 - ${model.discussCount} 评论',
+        style: TextStyle(
+          color: Colors.black54,
+        ),
       ),
     );
   }
@@ -102,7 +136,7 @@ class _RecommandModel {
     this.subTitle,
     this.greatCount,
     this.discussCount,
-});
+  });
 
   _RecommandModel.fromJson(Map<String, dynamic> json) {
     title = json['title'];
@@ -129,15 +163,15 @@ class _RecommandModel {
   static List<_RecommandModel> test(int count) {
     return List.generate(count, (i) {
       return _RecommandModel(
-        title: '随机标题',
+        title: '苹果11不小心隔夜充了九个多小时会有什么危害吗？',
         iconUrl: '',
-        username: '用户',
-        userSign: '用户个性签名',
-        subTitle: '随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题随机副标题',
+        username: '一颗刺猬',
+        userSign: '',
+        subTitle:
+            '千万别这样充电！！！危害特别大！！要知道充九个多小时早上起来电池肯定...',
         greatCount: Random().nextInt(9999),
         discussCount: Random().nextInt(99999),
       );
     });
   }
-
 }
