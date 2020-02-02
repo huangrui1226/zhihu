@@ -88,7 +88,8 @@ class _CellView extends StatelessWidget {
               model.username,
               style: TextStyle(
                 color: Colors.black,
-                fontWeight: FontWeight.w500,
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
               ),
             ),
           ),
