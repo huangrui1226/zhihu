@@ -79,7 +79,7 @@ class _CellView extends StatelessWidget {
               margin: EdgeInsets.only(right: 9),
               width: 20,
               height: 20,
-              child: Image.asset('assets/images/example_user_logo.png'),
+              child: Image.asset('assets/images/user_icon/example_user_logo.png'),
             ),
           ),
           Container(
