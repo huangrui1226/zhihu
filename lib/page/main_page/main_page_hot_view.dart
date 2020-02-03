@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class MainPageHotView extends StatefulWidget {
@@ -6,11 +7,13 @@ class MainPageHotView extends StatefulWidget {
 }
 
 class _MainPageHotViewState extends State<MainPageHotView> {
-  List<_HotModel> modelList = _HotModel.test();
+  List<_HotModel> modelList;
+  List<_CategoryModel> categoryList;
 
   @override
   void initState() {
     modelList = _HotModel.test();
+    categoryList = _CategoryModel.test();
     super.initState();
   }
 
@@ -18,16 +21,23 @@ class _MainPageHotViewState extends State<MainPageHotView> {
   Widget build(BuildContext context) {
     return Container(
       color: Color(0xFFEFEFEF),
-      child: ListView(
-        children: List.generate(10, (i) {
-          return Container(
-            color: Colors.white,
-            child: _CellView(
-              model: modelList[i],
-              index: i,
+      child: Column(
+        children: <Widget>[
+          _CategoryView(list: categoryList),
+          Expanded(
+            child: ListView(
+              children: List.generate(10, (i) {
+                return Container(
+                  color: Colors.white,
+                  child: _CellView(
+                    model: modelList[i],
+                    index: i,
+                  ),
+                );
+              }),
             ),
-          );
-        }),
+          ),
+        ],
       ),
     );
   }
@@ -71,7 +81,7 @@ class _CellView extends StatelessWidget {
                     margin: EdgeInsets.only(right: 12, top: 2),
                     child: Center(
                       child: Text(
-                        '${index+1}',
+                        '${index + 1}',
                         style: TextStyle(
                           color: index > 2 ? Colors.black54 : Colors.white,
                           fontSize: 16,
@@ -135,6 +145,63 @@ class _CellView extends StatelessWidget {
             Divider(height: 1, color: Color(0xFFD2D2D2)),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _CategoryView extends StatefulWidget {
+  final List<_CategoryModel> list;
+
+  _CategoryView({Key key, this.list}) : super(key: key);
+
+  @override
+  __CategoryViewState createState() => __CategoryViewState();
+}
+
+class __CategoryViewState extends State<_CategoryView> {
+  int index;
+
+  @override
+  void initState() {
+    index = 0;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      height: 53,
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: List.generate(widget.list.length, (i) {
+          _CategoryModel model = widget.list[i];
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                index = i;
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: i == index ? Color(0xFFEAF5FF) : Color(0xFFF5F5F5),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              margin: EdgeInsets.only(right: 12),
+              padding: EdgeInsets.symmetric(horizontal: 18),
+              child: Center(
+                child: Text(
+                  model.title,
+                  style: TextStyle(
+                    color: i == index ? Color(0xFF0084FE) : Color(0xFF808080),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
       ),
     );
   }
@@ -231,6 +298,34 @@ class _HotModel {
         detail: '1824 万热度',
         imageUrl: '',
       ),
+    ];
+  }
+}
+
+class _CategoryModel {
+  String title;
+
+  _CategoryModel({this.title});
+
+  _CategoryModel.fromJson(Map json) {
+    title = json['title'];
+  }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = Map();
+    json['title'] = title;
+    return json;
+  }
+
+  static List<_CategoryModel> test() {
+    return [
+      _CategoryModel(title: '全站'),
+      _CategoryModel(title: '科学'),
+      _CategoryModel(title: '数码'),
+      _CategoryModel(title: '体育'),
+      _CategoryModel(title: '时尚'),
+      _CategoryModel(title: '影院'),
+      _CategoryModel(title: '汽车'),
     ];
   }
 }
