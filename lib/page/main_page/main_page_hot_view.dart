@@ -55,13 +55,28 @@ class _CellView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(right: 12),
-                    child: Text(
-                      '$index',
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                    width: 15,
+                    height: 19,
+                    color: () {
+                      if (index == 0) {
+                        return Color(0xFFF55651);
+                      } else if (index == 1) {
+                        return Color(0xFFFE8D03);
+                      } else if (index == 2) {
+                        return Color(0xFFECB36E);
+                      } else {
+                        return Colors.white;
+                      }
+                    }(),
+                    margin: EdgeInsets.only(right: 12, top: 2),
+                    child: Center(
+                      child: Text(
+                        '${index+1}',
+                        style: TextStyle(
+                          color: index > 2 ? Colors.black54 : Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
