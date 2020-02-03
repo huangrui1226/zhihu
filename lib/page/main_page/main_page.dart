@@ -18,6 +18,13 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    TabController controller = TabController(
+      length: 3,
+      vsync: this,
+    );
+    controller.addListener(() {
+      viewModel.closeExpandView();
+    });
     viewModel = MainPageViewModel(
       refresh: () {
         setState(() {});
@@ -27,10 +34,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         duration: Duration(milliseconds: 300),
         vsync: this,
       ),
-      controller: TabController(
-        length: 3,
-        vsync: this,
-      ),
+      controller: controller,
     );
     super.initState();
   }
@@ -205,7 +209,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         viewModel.isExpanded == true
             ? Expanded(
                 child: GestureDetector(
-                  onTap: viewModel.onFocusClicked,
+                  onTap: viewModel.closeExpandView,
                   child: Container(
                     color: Color.fromARGB(
                       (50.0 * viewModel.expandAnim.value).toInt(),

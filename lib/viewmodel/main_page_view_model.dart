@@ -23,11 +23,22 @@ class MainPageViewModel {
   }
 
   onFocusClicked() {
-    isExpanded = !isExpanded;
-    if (isExpanded == true) {
-      expandAnim.forward();
+    // 如果在其他选项卡，首先切换到'关注'
+    if (controller.index != 0) {
+      controller.animateTo(0);
     } else {
-      expandAnim.reverse();
+      isExpanded = !isExpanded;
+      if (isExpanded == true) {
+        expandAnim.forward();
+      } else {
+        expandAnim.reverse();
+      }
     }
+
+  }
+
+  closeExpandView() {
+    isExpanded = false;
+    expandAnim.reverse();
   }
 }
