@@ -51,7 +51,21 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             MyTabBar(
               tabs: _tabList(),
               controller: viewModel.controller,
+              indicatorColor: Colors.black,
+              indicatorWeight: 3,
+              indicatorPadding: EdgeInsets.only(left: 40, right: 40),
               labelColor: Colors.black,
+              labelStyle: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+              unselectedLabelColor: Colors.black45,
+              unselectedLabelStyle: TextStyle(
+                color: Colors.black45,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             Divider(height: 1, color: Color(0xFFD2D2D2)),
             Expanded(
@@ -157,9 +171,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
                   return Container(
                     height: 34,
-                    margin: i == 2
-                        ? EdgeInsets.symmetric(horizontal: 14)
-                        : EdgeInsets.only(left: 14),
+                    margin: i == 2 ? EdgeInsets.symmetric(horizontal: 14) : EdgeInsets.only(left: 14),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(18),
                       child: FlatButton(
@@ -217,14 +229,16 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             viewModel.controller.animateTo(0);
           },
           child: Container(
+            color: Colors.transparent,
             child: Row(
               children: <Widget>[
+                Container(
+                  width: 24,
+                ),
                 Text('关注'),
                 GestureDetector(
                   onTap: viewModel.onFocusClicked,
-                  child: viewModel.isExpanded == true
-                      ? Icon(Icons.arrow_drop_up)
-                      : Icon(Icons.arrow_drop_down),
+                  child: viewModel.isExpanded == true ? Icon(Icons.arrow_drop_up) : Icon(Icons.arrow_drop_down),
                 ),
               ],
               mainAxisAlignment: MainAxisAlignment.center,
@@ -234,6 +248,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       ),
       MyTab(
         child: Container(
+          color: Colors.transparent,
           child: Center(
             child: Text('推荐'),
           ),
@@ -241,6 +256,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       ),
       MyTab(
         child: Container(
+          color: Colors.transparent,
           child: Center(
             child: Text('热榜'),
           ),

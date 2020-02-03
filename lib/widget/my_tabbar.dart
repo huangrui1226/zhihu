@@ -1060,7 +1060,7 @@ class _TabBarState extends State<MyTabBar> {
         onTap: () { _handleTap(index); },
         child: Container(
           color: Colors.white,
-          padding: EdgeInsets.only(bottom: widget.indicatorWeight),
+          margin: EdgeInsets.only(bottom: widget.indicatorWeight),
           child: Stack(
             children: <Widget>[
               wrappedTabs[index],
