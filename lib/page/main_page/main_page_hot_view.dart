@@ -1,44 +1,113 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MainPageHotView extends StatefulWidget {
   @override
   _MainPageHotViewState createState() => _MainPageHotViewState();
 }
 
-class _MainPageHotViewState extends State<MainPageHotView> {
+class _MainPageHotViewState extends State<MainPageHotView> with TickerProviderStateMixin {
   List<_HotModel> modelList;
   List<_CategoryModel> categoryList;
+  AnimationController updateAnim; // 刷新成功后提示框动画
+  RefreshController refreshController; // 刷新控制器
 
   @override
   void initState() {
     modelList = _HotModel.test();
     categoryList = _CategoryModel.test();
+    refreshController = RefreshController();
+    _configUpdateViewAnimation();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    updateAnim.dispose();
+    refreshController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Color(0xFFEFEFEF),
-      child: Column(
+      child: Stack(
         children: <Widget>[
-          _CategoryView(list: categoryList),
-          Expanded(
-            child: ListView(
-              children: List.generate(10, (i) {
-                return Container(
-                  color: Colors.white,
-                  child: _CellView(
-                    model: modelList[i],
-                    index: i,
+          Column(
+            children: <Widget>[
+              _CategoryView(list: categoryList),
+              Expanded(
+                child: SmartRefresher(
+                  onRefresh: () {
+                    updateAnim.forward();
+                    refreshController.refreshCompleted();
+                  },
+                  controller: refreshController,
+                  child: ListView(
+                    children: List.generate(10, (i) {
+                      return Container(
+                        color: Colors.white,
+                        child: _CellView(
+                          model: modelList[i],
+                          index: i,
+                        ),
+                      );
+                    }),
                   ),
-                );
-              }),
-            ),
+                ),
+              ),
+            ],
           ),
+          _UpdateView(updateAnim.value * 30),
         ],
       ),
+    );
+  }
+
+  _configUpdateViewAnimation() {
+    updateAnim = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+    updateAnim.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        Future.delayed(Duration(seconds: 1)).then((val) {
+          updateAnim.reverse();
+        });
+      }
+    });
+    updateAnim.addListener(() {
+      setState(() {});
+    });
+  }
+}
+
+// 关注动态已更新视图
+class _UpdateView extends StatelessWidget {
+  final double height;
+  _UpdateView(this.height);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(
+          height: this.height,
+          color: Colors.white,
+          child: Center(
+            child: Text(
+              '热榜已更新',
+              style: TextStyle(
+                color: Color(0xFFF98200),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+        Divider(height: 1, color: Color(0xFFE3E4E5)),
+      ],
     );
   }
 }

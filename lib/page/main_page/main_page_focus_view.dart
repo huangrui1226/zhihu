@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:zhihu/widget/my_refresh_indicator.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 enum FocusViewType {
   all, // 全部
@@ -19,26 +20,52 @@ class MainPageFocusView extends StatefulWidget {
   _MainPageFocusViewState createState() => _MainPageFocusViewState();
 }
 
-class _MainPageFocusViewState extends State<MainPageFocusView> {
+class _MainPageFocusViewState extends State<MainPageFocusView> with TickerProviderStateMixin {
   List<_FocusModel> modelList = _FocusModel.test(10);
+  AnimationController updateAnim; // 刷新成功后提示框动画
+  RefreshController refreshController; // 刷新控制器
+
+  @override
+  void initState() {
+    refreshController = RefreshController();
+    _configUpdateViewAnimation();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    updateAnim.dispose();
+    refreshController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Color(0xFFF5F5F5),
-      child: MyRefreshIndicator(
-        onRefresh: _onListRefresh,
-        child: ListView(
-          shrinkWrap: false,
-          children: List.generate(modelList.length, (i) {
-            return Container(
-              color: Colors.white,
-              margin: EdgeInsets.only(bottom: 8),
-              child: _CellView(
-                model: modelList[i],
-              ),
-            );
-          }),
-        ),
+      child: Stack(
+        children: <Widget>[
+          SmartRefresher(
+            controller: refreshController,
+            onRefresh: () {
+              updateAnim.forward();
+              refreshController.refreshCompleted();
+            },
+            child: ListView(
+              shrinkWrap: false,
+              children: List.generate(modelList.length, (i) {
+                return Container(
+                  color: Colors.white,
+                  margin: EdgeInsets.only(bottom: 8),
+                  child: _CellView(
+                    model: modelList[i],
+                  ),
+                );
+              }),
+            ),
+          ),
+          _UpdateView(updateAnim.value * 30),
+        ],
       ),
     );
   }
@@ -61,7 +88,27 @@ class _MainPageFocusViewState extends State<MainPageFocusView> {
     } else {
       print('Request failed with status: ${response.statusCode}.');
     }
-    return Future<void>.delayed(Duration(seconds: 2));
+    return Future<void>.delayed(Duration(seconds: 2)).then((val) {
+      updateAnim.forward();
+      refreshController.refreshCompleted();
+    });
+  }
+
+  _configUpdateViewAnimation() {
+    updateAnim = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+    updateAnim.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        Future.delayed(Duration(seconds: 1)).then((val) {
+          updateAnim.reverse();
+        });
+      }
+    });
+    updateAnim.addListener(() {
+      setState(() {});
+    });
   }
 }
 
@@ -214,6 +261,34 @@ class _CellView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// 关注动态已更新视图
+class _UpdateView extends StatelessWidget {
+  final double height;
+  _UpdateView(this.height);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(
+          height: this.height,
+          color: Colors.white,
+          child: Center(
+            child: Text(
+              '关注动态已更新',
+              style: TextStyle(
+                color: Color(0xFF0084FE),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+        Divider(height: 1, color: Color(0xFFE3E4E5)),
+      ],
     );
   }
 }

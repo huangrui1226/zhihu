@@ -1,27 +1,102 @@
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MainPageRecmndView extends StatefulWidget {
   @override
   _MainPageRecmndViewState createState() => _MainPageRecmndViewState();
 }
 
-class _MainPageRecmndViewState extends State<MainPageRecmndView> {
+class _MainPageRecmndViewState extends State<MainPageRecmndView> with TickerProviderStateMixin {
   List<_RecommandModel> modelList = _RecommandModel.test();
+  AnimationController updateAnim; // 刷新成功后提示框动画
+  RefreshController refreshController; // 刷新控制器
+
+  @override
+  void initState() {
+    refreshController = RefreshController();
+    _configUpdateViewAnimation();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    updateAnim.dispose();
+    refreshController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Color(0xFFF5F6F7),
-      child: ListView(
-        children: List.generate(modelList.length, (i) {
-          return Container(
-            color: Colors.white,
-            margin: EdgeInsets.only(bottom: 8),
-            child: _CellView(
-              model: modelList[i],
+      child: Stack(
+        children: <Widget>[
+          SmartRefresher(
+            controller: refreshController,
+            onRefresh: () {
+              updateAnim.forward();
+              refreshController.refreshCompleted();
+            },
+            child: ListView(
+              children: List.generate(modelList.length, (i) {
+                return Container(
+                  color: Colors.white,
+                  margin: EdgeInsets.only(bottom: 8),
+                  child: _CellView(
+                    model: modelList[i],
+                  ),
+                );
+              }),
             ),
-          );
-        }),
+          ),
+          _UpdateView(updateAnim.value * 30),
+        ],
       ),
+    );
+  }
+
+  _configUpdateViewAnimation() {
+    updateAnim = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+    updateAnim.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        Future.delayed(Duration(seconds: 1)).then((val) {
+          updateAnim.reverse();
+        });
+      }
+    });
+    updateAnim.addListener(() {
+      setState(() {});
+    });
+  }
+}
+
+// 关注动态已更新视图
+class _UpdateView extends StatelessWidget {
+  final double height;
+  _UpdateView(this.height);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(
+          height: this.height,
+          color: Colors.white,
+          child: Center(
+            child: Text(
+              '推荐已更新',
+              style: TextStyle(
+                color: Color(0xFF0084FE),
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+        Divider(height: 1, color: Color(0xFFE3E4E5)),
+      ],
     );
   }
 }
