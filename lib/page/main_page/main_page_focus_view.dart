@@ -1,6 +1,8 @@
-import 'dart:math';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:zhihu/widget/my_refresh_indicator.dart';
 
 enum FocusViewType {
   all, // 全部
@@ -23,18 +25,43 @@ class _MainPageFocusViewState extends State<MainPageFocusView> {
   Widget build(BuildContext context) {
     return Container(
       color: Color(0xFFF5F5F5),
-      child: ListView(
-        children: List.generate(modelList.length, (i) {
-          return Container(
-            color: Colors.white,
-            margin: EdgeInsets.only(bottom: 8),
-            child: _CellView(
-              model: modelList[i],
-            ),
-          );
-        }),
+      child: MyRefreshIndicator(
+        onRefresh: _onListRefresh,
+        child: ListView(
+          shrinkWrap: false,
+          children: List.generate(modelList.length, (i) {
+            return Container(
+              color: Colors.white,
+              margin: EdgeInsets.only(bottom: 8),
+              child: _CellView(
+                model: modelList[i],
+              ),
+            );
+          }),
+        ),
       ),
     );
+  }
+
+  Future<void> _onListRefresh() async {
+    // This example uses the Google Books API to search for books about http.
+    // https://developers.google.com/books/docs/overview
+    var url = 'https://www.baidu.com';
+
+    // Await the http get response, then decode the json-formatted response.
+    var response = await get(url);
+    if (response.statusCode == 200) {
+      try {
+        var jsonResponse = jsonDecode(response.body);
+        var itemCount = jsonResponse['totalItems'];
+        print('Number of books about http: $itemCount.');
+      } catch (err) {
+        print('err: $err');
+      }
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+    }
+    return Future<void>.delayed(Duration(seconds: 2));
   }
 }
 

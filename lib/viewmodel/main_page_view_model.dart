@@ -34,7 +34,6 @@ class MainPageViewModel {
         expandAnim.reverse();
       }
     }
-
   }
 
   closeExpandView() {
