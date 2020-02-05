@@ -46,6 +46,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    viewModel.context = context;
     return Scaffold(
       appBar: _appBar(),
       body: Container(
