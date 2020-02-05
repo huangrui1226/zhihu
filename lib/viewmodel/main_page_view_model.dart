@@ -6,6 +6,11 @@ class MainPageViewModel {
   TabController controller;
   void Function() refresh;
 
+  TextStyle selectTabStyle;
+  Color selectTabColor;
+  TextStyle unSelectTabStyle;
+  Color unSelectTabColor;
+
   MainPageViewModel({
     this.isExpanded = false,
     this.expandAnim,
@@ -15,6 +20,18 @@ class MainPageViewModel {
     this.expandAnim.addListener(() {
       refresh();
     });
+    this.selectTabColor = Colors.black;
+    this.selectTabStyle = TextStyle(
+      color: this.selectTabColor,
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+    );
+    this.unSelectTabColor = Colors.black45;
+    this.unSelectTabStyle = TextStyle(
+      color: this.unSelectTabColor,
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+    );
   }
 
   dispose() {
@@ -40,4 +57,6 @@ class MainPageViewModel {
     isExpanded = false;
     expandAnim.reverse();
   }
+
+  onSearchViewTap() {}
 }

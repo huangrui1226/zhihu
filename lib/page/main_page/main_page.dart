@@ -18,15 +18,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    TabController controller = TabController(
-      length: 3,
-      vsync: this,
-    );
-    controller.addListener(() {
-      viewModel.closeExpandView();
-    });
     viewModel = MainPageViewModel(
       refresh: () {
+        // TODO - refresh data
         setState(() {});
       },
       isExpanded: false,
@@ -34,7 +28,12 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         duration: Duration(milliseconds: 300),
         vsync: this,
       ),
-      controller: controller,
+      controller: TabController(
+        length: 3,
+        vsync: this,
+      )..addListener(() {
+        viewModel.closeExpandView();
+      }),
     );
     super.initState();
   }
@@ -58,18 +57,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               indicatorColor: Colors.black,
               indicatorWeight: 3,
               indicatorPadding: EdgeInsets.only(left: 40, right: 40),
-              labelColor: Colors.black,
-              labelStyle: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-              unselectedLabelColor: Colors.black45,
-              unselectedLabelStyle: TextStyle(
-                color: Colors.black45,
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+              labelColor: viewModel.selectTabColor,
+              labelStyle: viewModel.selectTabStyle,
+              unselectedLabelColor: viewModel.unSelectTabColor,
+              unselectedLabelStyle: viewModel.unSelectTabStyle,
             ),
             Divider(height: 1, color: Color(0xFFD2D2D2)),
             Expanded(
@@ -98,8 +89,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       title: Row(
         children: <Widget>[
           Container(
-            width: 44,
-            height: 44,
+            width: 32,
+            height: 32,
             child: Center(
               child: Image.asset(
                 'assets/images/main_live.png',
@@ -109,33 +100,37 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             ),
           ),
           Expanded(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 8.0),
-              decoration: BoxDecoration(
-                color: Color(0xFFF0F0F0),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              height: 34,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    child: Image.asset(
-                      'assets/images/search.png',
-                      width: 20,
-                      height: 20,
+            child: GestureDetector(
+              onTap: viewModel.onSearchViewTap,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 14),
+                decoration: BoxDecoration(
+                  color: Color(0xFFF0F0F0),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                height: 34,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 4),
+                      child: Image.asset(
+                        'assets/images/search.png',
+                        width: 20,
+                        height: 20,
+                      ),
                     ),
-                  ),
-                  Container(
-                    child: Text('我国人均GDP突破一万美元'),
-                  ),
-                ],
+                    Container(
+                      child: Text('高考查分那晚你做了什么？', style: TextStyle(color: Colors.black45, fontSize: 16)),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
           Container(
-            width: 44,
-            height: 44,
+            width: 32,
+            height: 32,
             child: Center(
               child: Image.asset(
                 'assets/images/main_history.png',
