@@ -34,8 +34,11 @@ class _MainPageRecmndViewState extends State<MainPageRecmndView> with TickerProv
           SmartRefresher(
             controller: refreshController,
             onRefresh: () {
-              updateAnim.forward();
-              refreshController.refreshCompleted();
+              Future.delayed(Duration(seconds: 1)).then((_) {
+                // TODO - refresh data
+                updateAnim.forward();
+                refreshController.refreshCompleted();
+              });
             },
             child: ListView(
               children: List.generate(modelList.length, (i) {

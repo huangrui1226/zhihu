@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:zhihu/widget/my_refresh_indicator.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 enum FocusViewType {
@@ -47,9 +46,12 @@ class _MainPageFocusViewState extends State<MainPageFocusView> with TickerProvid
         children: <Widget>[
           SmartRefresher(
             controller: refreshController,
-            onRefresh: () {
-              updateAnim.forward();
-              refreshController.refreshCompleted();
+            onRefresh: () async {
+              Future.delayed(Duration(seconds: 1)).then((_) {
+                // TODO - refresh data
+                updateAnim.forward();
+                refreshController.refreshCompleted();
+              });
             },
             child: ListView(
               shrinkWrap: false,
@@ -68,30 +70,6 @@ class _MainPageFocusViewState extends State<MainPageFocusView> with TickerProvid
         ],
       ),
     );
-  }
-
-  Future<void> _onListRefresh() async {
-    // This example uses the Google Books API to search for books about http.
-    // https://developers.google.com/books/docs/overview
-    var url = 'https://www.baidu.com';
-
-    // Await the http get response, then decode the json-formatted response.
-    var response = await get(url);
-    if (response.statusCode == 200) {
-      try {
-        var jsonResponse = jsonDecode(response.body);
-        var itemCount = jsonResponse['totalItems'];
-        print('Number of books about http: $itemCount.');
-      } catch (err) {
-        print('err: $err');
-      }
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-    }
-    return Future<void>.delayed(Duration(seconds: 2)).then((val) {
-      updateAnim.forward();
-      refreshController.refreshCompleted();
-    });
   }
 
   _configUpdateViewAnimation() {

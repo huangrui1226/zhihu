@@ -41,8 +41,11 @@ class _MainPageHotViewState extends State<MainPageHotView> with TickerProviderSt
               Expanded(
                 child: SmartRefresher(
                   onRefresh: () {
-                    updateAnim.forward();
-                    refreshController.refreshCompleted();
+                    Future.delayed(Duration(seconds: 1)).then((_) {
+                      // TODO - refresh data
+                      updateAnim.forward();
+                      refreshController.refreshCompleted();
+                    });
                   },
                   controller: refreshController,
                   child: ListView(
