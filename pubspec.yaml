@@ -48,6 +48,7 @@ flutter:
     - assets/images/main_hot/
     - assets/images/main_focus/
     - assets/images/main_recommand/
+    - assets/images/main_seed/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
