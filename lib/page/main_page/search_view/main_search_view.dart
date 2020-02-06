@@ -11,24 +11,67 @@ class MainSearchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int length = modelList.length ~/ 2;
     return Container(
-      child: GridView(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisSpacing: 10,
-          crossAxisSpacing: 10,
-          crossAxisCount: 2,
-        ),
-        children: List.generate(modelList.length, (index) {
-          RecommandModel model = modelList[index];
+      child: Column(
+        children: List.generate(length, (index) {
           return Container(
-            color: Colors.red,
-            height: 64,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(model.title),
-                Text(model.subTitle),
-              ],
+            height: 60,
+            child: Row(
+              children: List.generate((index + 1) * 2 <= modelList.length ? 2 : 1, (i) {
+                RecommandModel model = modelList[index * 2 + i];
+                return Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(top: 12, right: 8),
+                          child: Text(
+                            '${index * 2 + i + 1}',
+                            style: TextStyle(
+                              color: (index*2+i+1) < 4 ? Color(0xFFFB980C) : Colors.black38,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(bottom: 2),
+                                child: Text(
+                                  model.title,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Container(
+                                child: Text(
+                                  model.subTitle,
+                                  style: TextStyle(
+                                    color: Colors.black45,
+                                    fontSize: 13,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
             ),
           );
         }),
