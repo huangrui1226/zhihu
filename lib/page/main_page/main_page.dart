@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zhihu/page/main_page/direct_seed/direct_seed_page.dart';
 import 'package:zhihu/page/main_page/main_page_focus_view.dart';
 import 'package:zhihu/page/main_page/main_page_hot_view.dart';
 import 'package:zhihu/page/main_page/main_page_recommand_view.dart';
@@ -89,14 +90,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return AppBar(
       title: Row(
         children: <Widget>[
-          Container(
-            width: 32,
-            height: 32,
-            child: Center(
-              child: Image.asset(
-                'assets/images/main_live.png',
-                width: 20,
-                height: 20,
+          GestureDetector(
+            onTap: onDirectSeedClicked,
+            child: Container(
+              width: 32,
+              height: 32,
+              child: Center(
+                child: Image.asset(
+                  'assets/images/main_live.png',
+                  width: 20,
+                  height: 20,
+                ),
               ),
             ),
           ),
@@ -263,5 +267,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
         ),
       ),
     ];
+  }
+
+  onDirectSeedClicked() {
+    Navigator.of(context).pushNamed(DirectSeedPage.rName);
   }
 }
