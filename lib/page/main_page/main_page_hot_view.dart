@@ -160,7 +160,7 @@ class __ExpandedViewState extends State<_ExpandedView> {
                 widget.anim.reverse();
               },
               child: Container(
-                color: Color.fromARGB((50.0 * widget.anim.value).toInt(), 0, 0, 0),
+                color: Color.fromARGB((100.0 * widget.anim.value).toInt(), 0, 0, 0),
               ),
             ),
           ),
@@ -491,6 +491,7 @@ class __CategoryViewState extends State<_CategoryView> {
         children: <Widget>[
           Positioned.fill(
             child: ListView(
+              padding: EdgeInsets.only(right: 48),
               scrollDirection: Axis.horizontal,
               children: List.generate(widget.list.length, (i) {
                 _CategoryModel model = widget.list[i];
