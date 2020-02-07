@@ -88,52 +88,37 @@ class _DirectSeedFocusViewState extends State<DirectSeedFocusView> {
 
       /// 暂未开播
       if (this.noSeedingList.length != 0) {
-        children.add(Container(
-          padding: EdgeInsets.only(left: 16),
-          alignment: Alignment.centerLeft,
-          color: Colors.white,
-          height: 44,
-          child: Text(
-            '暂未开播',
-            style: TextStyle(
-              color: Colors.black87,
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ));
-        children.add(_NoSeedingCellView(modelList: this.noSeedingList));
+        children.add(_SeedingTitleView('暂未开播'));
+        children.addAll(this.noSeedingList.map((model) => _NoSeedingCellView(model: model)));
       }
 
       /// 正在直播
       if (this.isSeedingList.length != 0) {
-        children.add(Container(
-          padding: EdgeInsets.only(left: 16),
-          alignment: Alignment.centerLeft,
-          color: Colors.white,
-          height: 44,
-          child: Text(
-            '正在直播',
-            style: TextStyle(
-              color: Colors.black87,
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
+        children.add(_SeedingTitleView('正在直播'));
+        for (int i = 0; i <= this.isSeedingList.length / 2; i++) {
+          Widget row = Container(
+            color: Colors.white,
+            padding: EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _IsSeedingCellView(model: this.isSeedingList[i * 2]),
+                (i + 1) * 2 > this.isSeedingList.length ? Container() : _IsSeedingCellView(model: this.isSeedingList[i * 2 + 1]),
+              ],
             ),
-          ),
-        ));
-        children.add(Expanded(child: _SeedingCellView(modelList: this.isSeedingList)));
+          );
+          children.add(row);
+        }
       }
+
       return Container(
         child: SmartRefresher(
           onRefresh: () {
             controller.refreshCompleted();
           },
           controller: controller,
-          child: Container(
-            padding: EdgeInsets.zero,
-            child: Column(
-              children: children,
-            ),
+          child: ListView(
+            children: children,
           ),
         ),
       );
@@ -141,50 +126,43 @@ class _DirectSeedFocusViewState extends State<DirectSeedFocusView> {
   }
 }
 
-class _SeedingCellView extends StatelessWidget {
-  final List<DirectSeedModel> modelList;
+class _SeedingTitleView extends StatelessWidget {
+  final String title;
 
-  _SeedingCellView({
+  _SeedingTitleView(
+    this.title, {
     Key key,
-    this.modelList,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GridView(
-      shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
+    return Container(
+      padding: EdgeInsets.only(left: 16),
+      alignment: Alignment.centerLeft,
+      color: Colors.white,
+      height: 44,
+      child: Text(
+        this.title,
+        style: TextStyle(
+          color: Colors.black87,
+          fontSize: 16,
+          fontWeight: FontWeight.w400,
+        ),
       ),
-      children: List.generate(15, (index) {
-        return Container(
-          width: 100,
-          color: Colors.red,
-        );
-      }),
     );
   }
 }
 
 class _NoSeedingCellView extends StatelessWidget {
-  final List<DirectSeedModel> modelList;
+  final DirectSeedModel model;
+
   _NoSeedingCellView({
     Key key,
-    this.modelList,
+    this.model,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: List.generate(this.modelList.length, (index) {
-        return _cellView(this.modelList[index]);
-      }),
-    );
-  }
-
-  Widget _cellView(DirectSeedModel model) {
     return Container(
       height: 64,
       color: Colors.white,
@@ -227,6 +205,130 @@ class _NoSeedingCellView extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _IsSeedingCellView extends StatelessWidget {
+  final DirectSeedModel model;
+
+  _IsSeedingCellView({
+    Key key,
+    this.model,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double scrWidth = MediaQuery.of(context).size.width;
+    double width = (scrWidth - 15 * 3) / 2;
+
+    /// width 372,height 372,ratio 1:1
+    return Container(
+      height: width,
+      width: width,
+      child: Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              flex: 271,
+              child: Container(
+                child: Stack(
+                  children: <Widget>[
+                    /// width 369, height 208, ratio 369 / 208.0
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: AspectRatio(
+                        aspectRatio: 369 / 208.0,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: Image.asset(model.seedImageUrl, fit: BoxFit.fitWidth),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 35,
+                      child: Container(
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(17.5),
+                                border: Border.all(color: Colors.orange, width: 1),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(14.5),
+                                child: Image.asset(model.userIconUrl),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: Text(model.username),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 25.5,
+                      left: 3,
+                      width: 29,
+                      height: 12,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Color.fromRGBO(255, 50, 102, 1.0),
+                              Color.fromRGBO(255, 148, 98, 1.0),
+                              Color.fromRGBO(255, 50, 102, 1.0),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(6), bottomRight: Radius.circular(6)),
+                        ),
+                        child: Center(
+                            child: Text(
+                          '直播中',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                          ),
+                        )),
+                      ),
+                    ),
+                    Positioned(
+                      right: 4,
+                      bottom: 4,
+                      child: Container(
+                        child: Text(
+                          model.audience == 0 ? '' : model.audience.toString(),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 101,
+              child: Container(
+                margin: EdgeInsets.only(top: 6),
+                child: Text(model.title),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
