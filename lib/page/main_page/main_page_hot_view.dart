@@ -12,6 +12,7 @@ class _MainPageHotViewState extends State<MainPageHotView> with TickerProviderSt
   List<_CategoryModel> categoryList;
   AnimationController updateAnim; // 刷新成功后提示框动画
   RefreshController refreshController; // 刷新控制器
+  AnimationController expandedAnim; // 下拉框动画
 
   @override
   void initState() {
@@ -19,12 +20,14 @@ class _MainPageHotViewState extends State<MainPageHotView> with TickerProviderSt
     categoryList = _CategoryModel.test();
     refreshController = RefreshController();
     _configUpdateViewAnimation();
+    _configExpandedViewAnimation();
     super.initState();
   }
 
   @override
   void dispose() {
     updateAnim.dispose();
+    expandedAnim.dispose();
     refreshController.dispose();
     super.dispose();
   }
@@ -37,7 +40,7 @@ class _MainPageHotViewState extends State<MainPageHotView> with TickerProviderSt
         children: <Widget>[
           Column(
             children: <Widget>[
-              _CategoryView(list: categoryList),
+              _CategoryView(list: categoryList, anim: expandedAnim),
               Expanded(
                 child: SmartRefresher(
                   onRefresh: () {
@@ -64,6 +67,7 @@ class _MainPageHotViewState extends State<MainPageHotView> with TickerProviderSt
             ],
           ),
           _UpdateView(updateAnim.value * 30),
+          _ExpandedView(this.expandedAnim, this.categoryList),
         ],
       ),
     );
@@ -82,6 +86,16 @@ class _MainPageHotViewState extends State<MainPageHotView> with TickerProviderSt
       }
     });
     updateAnim.addListener(() {
+      setState(() {});
+    });
+  }
+
+  _configExpandedViewAnimation() {
+    expandedAnim = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+    expandedAnim.addListener(() {
       setState(() {});
     });
   }
@@ -112,6 +126,228 @@ class _UpdateView extends StatelessWidget {
         Divider(height: 1, color: Color(0xFFE3E4E5)),
       ],
     );
+  }
+}
+
+class _ExpandedView extends StatefulWidget {
+  final AnimationController anim;
+  final List<_CategoryModel> modelList;
+  final _CategoryModel selectModel;
+
+  _ExpandedView(
+    this.anim,
+    this.modelList, {
+    this.selectModel,
+    Key key,
+  }) : super(key: key);
+
+  @override
+  __ExpandedViewState createState() => __ExpandedViewState();
+}
+
+class __ExpandedViewState extends State<_ExpandedView> {
+  @override
+  Widget build(BuildContext context) {
+    if (widget.anim.isDismissed) {
+      return Container();
+    } else {
+      double margin = 12;
+      return Stack(
+        children: <Widget>[
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                widget.anim.reverse();
+              },
+              child: Container(
+                color: Color.fromARGB((50.0 * widget.anim.value).toInt(), 0, 0, 0),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            left: 0,
+            child: SizeTransition(
+              sizeFactor: widget.anim,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: margin),
+                color: Colors.white,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      height: 51,
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Container(
+                              child: Text(
+                                '全部榜单',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            child: Icon(Icons.keyboard_arrow_up),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 40,
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(right: 8),
+                            child: Text(
+                              '我的榜单',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: Text(
+                                '长按拖拽排序',
+                                style: TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 45,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Color.fromRGBO(0, 130, 255, 1.0),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '编辑',
+                                style: TextStyle(
+                                  color: Color.fromRGBO(0, 120, 255, 1.0),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    /// ratio = 172 / 70.0
+                    () {
+                      double ratio = 172 / 70.0;
+                      double cellWidth = (MediaQuery.of(context).size.width - margin * 5) / 4;
+                      double cellHeight = cellWidth / ratio;
+                      int row = widget.modelList.length == 0 ? 0 : 1 + (widget.modelList.length - 1) ~/ 4;
+                      double height = (margin + cellHeight) * row + margin;
+                      return Container(
+                        height: height,
+                        child: Stack(
+                          children: List.generate(widget.modelList.length, (index) {
+                            _CategoryModel model = widget.modelList[index];
+                            int selectIndex;
+                            if (widget.selectModel == null) {
+                              selectIndex = 0;
+                            } else {
+                              selectIndex = widget.modelList.indexOf(widget.selectModel);
+                            }
+                            return Positioned(
+                              left: (margin + cellWidth) * (index % 4),
+                              top: (margin + cellHeight) * (index ~/ 4),
+                              width: cellWidth,
+                              height: cellHeight,
+                              child: Container(
+                                color: Color(0xFFF5F6F7),
+                                child: Center(
+                                  child: Text(
+                                    model.title,
+                                    style: TextStyle(
+                                      color: selectIndex == index ? Colors.black12 : Colors.black,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+                      );
+                    }(),
+                    Container(
+                      height: 55,
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(right: 8),
+                            child: Text(
+                              '推荐榜单',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: Text(
+                                '点击添加榜单',
+                                style: TextStyle(
+                                  color: Colors.black45,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    () {
+                      double ratio = 172 / 70.0;
+                      double cellWidth = (MediaQuery.of(context).size.width - margin * 5) / 4;
+                      double cellHeight = cellWidth / ratio;
+                      return Container(
+                        width: cellWidth,
+                        height: cellHeight,
+                        margin: EdgeInsets.only(top: 3, bottom: 28),
+                        child: Container(
+                          color: Color(0xFFF5F6F7),
+                          child: Center(
+                            child: Text(
+                              '+ 校园',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
   }
 }
 
@@ -224,8 +460,13 @@ class _CellView extends StatelessWidget {
 
 class _CategoryView extends StatefulWidget {
   final List<_CategoryModel> list;
+  final AnimationController anim;
 
-  _CategoryView({Key key, this.list}) : super(key: key);
+  _CategoryView({
+    Key key,
+    this.list,
+    this.anim,
+  }) : super(key: key);
 
   @override
   __CategoryViewState createState() => __CategoryViewState();
@@ -246,34 +487,70 @@ class __CategoryViewState extends State<_CategoryView> {
       color: Colors.white,
       height: 53,
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: List.generate(widget.list.length, (i) {
-          _CategoryModel model = widget.list[i];
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                index = i;
-              });
-            },
+      child: Stack(
+        children: <Widget>[
+          Positioned.fill(
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: List.generate(widget.list.length, (i) {
+                _CategoryModel model = widget.list[i];
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      index = i;
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: i == index ? Color(0xFFEAF5FF) : Color(0xFFF5F5F5),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    margin: EdgeInsets.only(right: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 18),
+                    child: Center(
+                      child: Text(
+                        model.title,
+                        style: TextStyle(
+                          color: i == index ? Color(0xFF0084FE) : Color(0xFF808080),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            bottom: 0,
+            width: 80,
             child: Container(
               decoration: BoxDecoration(
-                color: i == index ? Color(0xFFEAF5FF) : Color(0xFFF5F5F5),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              margin: EdgeInsets.only(right: 12),
-              padding: EdgeInsets.symmetric(horizontal: 18),
-              child: Center(
-                child: Text(
-                  model.title,
-                  style: TextStyle(
-                    color: i == index ? Color(0xFF0084FE) : Color(0xFF808080),
-                  ),
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromRGBO(255, 255, 255, 0.0),
+                    Color.fromRGBO(255, 255, 255, 1.0),
+                    Color.fromRGBO(255, 255, 255, 1.0),
+                  ],
                 ),
               ),
             ),
-          );
-        }),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            bottom: 0,
+            child: GestureDetector(
+              onTap: () {
+                widget.anim.forward();
+              },
+              child: Container(
+                child: Icon(Icons.keyboard_arrow_down),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

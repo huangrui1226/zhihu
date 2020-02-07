@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zhihu/main_tabbar_page.dart';
+
 import 'package:zhihu/page/main_page/direct_seed/direct_seed_page.dart';
 import 'package:zhihu/page/main_page/search_view/main_search_page.dart';
+import 'package:zhihu/page/member_page/member_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,6 +36,7 @@ class _MyAppState extends State<MyApp> {
         MainTabPage.rName: (context) => MainTabPage(),
         MainSearchPage.rName: (context) => MainSearchPage(),
         DirectSeedPage.rName: (context) => DirectSeedPage(),
+        MemberPage.rName: (context) => MemberPage(),
       },
     );
   }

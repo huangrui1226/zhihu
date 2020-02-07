@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:zhihu/member_page.dart';
 import 'package:zhihu/page/main_page/main_page.dart';
 import 'package:zhihu/message_page.dart';
 import 'package:zhihu/mine_page.dart';
+import 'package:zhihu/page/member_page/member_page.dart';
 
 class MainTabPage extends StatefulWidget {
   static String rName = 'MainTabPage';
