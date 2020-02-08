@@ -336,11 +336,11 @@ class _DiscountTodayView extends StatelessWidget {
     double height = width / ratio;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: _margin, vertical: 16),
+      padding: EdgeInsets.only(top: 16),
       child: Column(
         children: <Widget>[
           Container(
-            margin: EdgeInsets.only(bottom: 16),
+            padding: EdgeInsets.only(left: _margin, right: _margin),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -390,8 +390,9 @@ class _DiscountTodayView extends StatelessWidget {
             ),
           ),
           Container(
-            height: height,
+            height: height + 16,
             child: GridView(
+              padding: EdgeInsets.symmetric(vertical: 16, horizontal: _margin),
               scrollDirection: Axis.horizontal,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 1,
@@ -412,6 +413,17 @@ class _DiscountTodayView extends StatelessWidget {
 
   Widget _cellView(_DiscountModel model) {
     return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(5),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x1F000000),
+            offset: Offset(0, 0),
+            blurRadius: 5,
+          ),
+        ],
+      ),
       child: Stack(
         children: <Widget>[
           Container(
@@ -437,40 +449,32 @@ class _DiscountTodayView extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  flex: 244,
+                  flex: 152,
                   child: Container(
                     child: Column(
                       children: <Widget>[
                         Container(
-                          margin: EdgeInsets.only(top: 20),
-                          child: Text(
-                            model.title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
+                          height: 40,
+                          margin: EdgeInsets.only(top: 7.5, left: 13, right: 13),
+                          child: Center(
+                            child: Text(
+                              model.title,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
                             ),
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(top: 8),
-                          child: Text(
-                            '原价：¥${model.originalPrice}',
-                            style: TextStyle(
-                              color: Colors.black38,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          height: 32,
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Color.fromARGB(255, 251, 152, 12), width: 1),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            model.currentPrice == 0 ? '免费领取' : '${model.currentPrice} 元领取',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 251, 152, 12),
+                        Expanded(
+                          child: Container(
+                            child: Text(
+                              '原价：¥${model.originalPrice}',
+                              style: TextStyle(
+                                color: Colors.black38,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                         ),
@@ -478,10 +482,77 @@ class _DiscountTodayView extends StatelessWidget {
                     ),
                   ),
                 ),
+                Expanded(
+                  flex: 60,
+                  child: Container(
+                    height: 30,
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Color.fromARGB(255, 251, 152, 12), width: 0.5),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Text(
+                      model.currentPrice == 0 ? '免费领取' : '${model.currentPrice} 元领取',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 251, 152, 12),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(flex: 32, child: Container()),
               ],
             ),
           ),
-          Container(),
+          () {
+            if (model.currentPrice == model.originalPrice) {
+              return Container();
+            } else if (model.currentPrice == 0) {
+              // 限免
+              return Positioned(
+                width: 41,
+                height: 18,
+                top: 0,
+                left: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(0, 132, 254, 1.0),
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(5), bottomRight: Radius.circular(5)),
+                  ),
+                  child: Center(
+                    child: Text('限免',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                    ),),
+                  ),
+                ),
+              );
+            } else {
+              // 折扣
+              return Positioned(
+                width: 41,
+                height: 18,
+                top: 0,
+                left: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color.fromRGBO(251, 152, 12, 1.0),
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(5), bottomRight: Radius.circular(5)),
+                  ),
+                  child: Center(
+                    child: Text('折扣',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                      ),),
+                  ),
+                ),
+              );
+            }
+          }(),
         ],
       ),
     );
