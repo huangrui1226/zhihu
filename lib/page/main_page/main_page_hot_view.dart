@@ -93,7 +93,7 @@ class _MainPageHotViewState extends State<MainPageHotView> with TickerProviderSt
   _configExpandedViewAnimation() {
     expandedAnim = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 200),
     );
     expandedAnim.addListener(() {
       setState(() {});
