@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zhihu/page/member_page/member_recommand_view.dart';
 
 class MemberPage extends StatefulWidget {
   static String rName = 'MemberPage';
@@ -10,6 +11,7 @@ class MemberPage extends StatefulWidget {
 class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin {
   TabController tabController;
   List<Tab> tabList;
+  List<Widget> tabViewList;
 
   @override
   void initState() {
@@ -19,6 +21,13 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin {
       Tab(child: Text('杂志')),
       Tab(child: Text('盐选专栏')),
       Tab(child: Text('Live讲座')),
+    ];
+    tabViewList = [
+      MemberRecommandView(),
+      MemberRecommandView(),
+      MemberRecommandView(),
+      MemberRecommandView(),
+      MemberRecommandView(),
     ];
     tabController = TabController(
       vsync: this,
@@ -36,7 +45,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin {
           _AppBar(),
           _MyTabbar(tabController, tabList: tabList),
           Divider(height: 1, color: Color.fromRGBO(210, 211, 212, 1.0)),
-          Expanded(child: _MyTabbarView(tabController)),
+          Expanded(child: _MyTabbarView(tabViewList, tabController)),
         ],
       ),
     );
@@ -159,8 +168,10 @@ class _MyTabbar extends StatelessWidget {
 
 class _MyTabbarView extends StatelessWidget {
   final TabController controller;
+  final List<Widget> tabViewList;
 
   _MyTabbarView(
+    this.tabViewList,
     this.controller, {
     Key key,
   }) : super(key: key);
@@ -169,12 +180,7 @@ class _MyTabbarView extends StatelessWidget {
   Widget build(BuildContext context) {
     return TabBarView(
       controller: controller,
-      children: List.generate(controller.length, (index) {
-        return Container(
-          margin: EdgeInsets.all(8),
-          color: Colors.red,
-        );
-      }),
+      children: tabViewList,
     );
   }
 }
