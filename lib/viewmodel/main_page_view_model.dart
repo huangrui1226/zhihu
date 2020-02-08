@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zhihu/page/main_page/search_view/main_search_page.dart';
-import 'package:zhihu/route/my_fade_route.dart';
 
 class MainPageViewModel {
   bool isExpanded = false; // 关注按钮下方的View

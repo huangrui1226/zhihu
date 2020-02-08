@@ -83,7 +83,6 @@ class _DirectSeedFocusViewState extends State<DirectSeedFocusView> {
         ),
       );
     } else {
-      int count;
       List<Widget> children = [];
 
       /// 暂未开播
