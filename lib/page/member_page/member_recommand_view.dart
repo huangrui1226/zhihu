@@ -612,7 +612,6 @@ class _FreeBooksTrialView extends StatelessWidget {
           ),
           Container(
             height: height,
-            width: width,
             child: GridView(
               physics: NeverScrollableScrollPhysics(),
               padding: EdgeInsets.zero,
