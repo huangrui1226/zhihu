@@ -12,11 +12,13 @@ class MemberReadingView extends StatefulWidget {
 class _MemberReadingViewState extends State<MemberReadingView> {
   List<_CategoryModel> modelList;
   List<_SectionModel> sectionList;
+  List<_BookGoodModel> bookList;
 
   @override
   void initState() {
     modelList = _CategoryModel.test();
     sectionList = _SectionModel.test();
+    bookList = _BookGoodModel.test();
     super.initState();
   }
 
@@ -33,7 +35,7 @@ class _MemberReadingViewState extends State<MemberReadingView> {
           ..addAll(sectionList.map((model) {
             return _SectionView(model: model);
           }))
-          ..add(_FindMoreView()),
+          ..add(_FindMoreView(modelList: bookList)),
       ),
     );
   }
@@ -194,6 +196,12 @@ class _SectionView extends StatelessWidget {
 }
 
 class _FindMoreView extends StatelessWidget {
+  final List<_BookGoodModel> modelList;
+
+  _FindMoreView({
+    Key key,
+    this.modelList,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -201,11 +209,100 @@ class _FindMoreView extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Container(
+            padding: EdgeInsets.symmetric(horizontal: _margin),
             height: 61,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Expanded(child: Text('发现更多', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500))),
+              ],
+            ),
+          ),
+        ]..addAll(modelList.map((model) {
+            return _cellView(model);
+          })),
+      ),
+    );
+  }
+
+  Widget _cellView(_BookGoodModel model) {
+    double ratio = 140 / 186;
+    EdgeInsetsGeometry padding = EdgeInsets.only(bottom: _margin, left: _margin, right: _margin);
+    return Container(
+      margin: padding,
+      height: 113,
+      child: Row(
+        children: <Widget>[
+          AspectRatio(
+            aspectRatio: ratio,
+            child: Image.asset(
+              model.imagePaht,
+              fit: BoxFit.fill,
+            ),
+          ),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    model.title,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    maxLines: 2,
+                  ),
+                  Text(
+                    model.author,
+                    style: TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    model.subTitle,
+                    style: TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.w500),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            width: 78,
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: Container(),
+                ),
+                Container(
+                  height: 30,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Color.fromARGB(255, 245, 246, 247),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '¥ ${model.price}',
+                      style: TextStyle(
+                        color: Color.fromRGBO(203, 153, 79, 1.0),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Text(
+                      model.isFree ? '盐选会员免费' : '',
+                      style: TextStyle(
+                        color: Colors.black38,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -764,6 +861,90 @@ class _BookModel {
         isDigit: true,
         title: '女神从来不慌张（周迅、刘诗诗、孙俪、王菲...)',
         subTitle: '辫子歪歪',
+      ),
+    ];
+  }
+}
+
+class _BookGoodModel {
+  String imagePaht;
+  String title;
+  String author;
+  String subTitle;
+  double price;
+  bool isFree;
+
+  _BookGoodModel({
+    this.imagePaht,
+    this.title,
+    this.author,
+    this.subTitle,
+    this.price,
+    this.isFree,
+  });
+
+  _BookGoodModel.fromJson(Map json) {
+    imagePaht = json['imagePath'];
+    title = json['title'];
+    author = json['author'];
+    subTitle = json['subTitle'];
+    price = json['price'];
+    isFree = json['isFree'];
+  }
+
+  Map<String, dynamic> toJson() {
+    Map json = Map();
+    json['imagePath'] = imagePaht;
+    json['title'] = title;
+    json['author'] = author;
+    json['subTitle'] = subTitle;
+    json['price'] = price;
+    json['isFree'] = isFree;
+    return json;
+  }
+
+  static List<_BookGoodModel> test() {
+    String base = 'assets/images/member/member_reading/';
+    return [
+      _BookGoodModel(
+        imagePaht: base + 'book_good_image_0.png',
+        title: '笑场',
+        author: '李诞',
+        subTitle: '高手从来不拔刀，真僧只说家常事',
+        price: 17.99,
+        isFree: true,
+      ),
+      _BookGoodModel(
+        imagePaht: base + 'book_good_image_1.png',
+        title: 'Linux命令行与shell脚本编程大全',
+        author: 'Richard Blum',
+        subTitle: '一本关于Linus命令行与shell脚本编程的书',
+        price: 54.99,
+        isFree: false,
+      ),
+      _BookGoodModel(
+        imagePaht: base + 'book_good_image_2.png',
+        title: '白话区块链',
+        author: '蒋勇',
+        subTitle: '涵盖区块链底层技术，典型业务场景',
+        price: 25,
+        isFree: true,
+      ),
+      _BookGoodModel(
+        imagePaht: base + 'book_good_image_3.png',
+        title: '聪明人用方格笔记本',
+        author: '高桥政史',
+        subTitle: '开始新的笔记之路，开启新的人生旅途',
+        price: 17.99,
+        isFree: true,
+      ),
+      _BookGoodModel(
+        imagePaht: base + 'book_good_image_4.png',
+        title: 'Nginx完全开发指南：使用C、C++和OpenResty',
+        author: '罗剑锋',
+        subTitle: '一个近乎「全能」的服务器软件开发书',
+        price: 58.8,
+        isFree: true,
       ),
     ];
   }
