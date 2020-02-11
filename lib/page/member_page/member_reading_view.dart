@@ -226,10 +226,10 @@ class _FindMoreView extends StatelessWidget {
   }
 
   Widget _cellView(_BookGoodModel model) {
-    double ratio = 140 / 186;
+    double ratio = 140 / 186.0;
     EdgeInsetsGeometry padding = EdgeInsets.only(bottom: _margin, left: _margin, right: _margin);
     return Container(
-      margin: padding,
+      padding: padding,
       height: 113,
       child: Row(
         children: <Widget>[
@@ -237,7 +237,7 @@ class _FindMoreView extends StatelessWidget {
             aspectRatio: ratio,
             child: Image.asset(
               model.imagePaht,
-              fit: BoxFit.fill,
+//              fit: BoxFit.fill,
             ),
           ),
           Expanded(
@@ -294,6 +294,7 @@ class _FindMoreView extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: Container(
+                    margin: EdgeInsets.only(top: 2),
                     child: Text(
                       model.isFree ? '盐选会员免费' : '',
                       style: TextStyle(
@@ -944,6 +945,14 @@ class _BookGoodModel {
         author: '罗剑锋',
         subTitle: '一个近乎「全能」的服务器软件开发书',
         price: 58.8,
+        isFree: true,
+      ),
+      _BookGoodModel(
+        imagePaht: base + 'book_good_image_5.png',
+        title: '浴缸里的惊叹：256道让你恍然大悟的趣题',
+        author: '顾森',
+        subTitle: '一个疯狂数学爱好者的数学笔记。',
+        price: 18,
         isFree: true,
       ),
     ];
