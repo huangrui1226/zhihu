@@ -10,12 +10,24 @@ class MemberMagazineView extends StatefulWidget {
 }
 
 class _MemberMagazineViewState extends State<MemberMagazineView> {
+  List<_ArticleModel> articleList;
+
+  @override
+  void initState() {
+    articleList = _ArticleModel.test();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Column(
+      child: ListView(
+        padding: EdgeInsets.zero,
         children: <Widget>[
           _BannerView(),
+          Container(height: 8, color: Color.fromARGB(255, 245, 246, 247)),
+          _ArticleView(articleList: articleList),
+          _BottomView(),
         ],
       ),
     );
@@ -35,6 +47,153 @@ class _BannerView extends StatelessWidget {
         child: Image.asset(base + 'banner_image.png'),
       ),
     );
+  }
+}
+
+class _ArticleView extends StatelessWidget {
+  final List<_ArticleModel> articleList;
+  double margin = 20;
+
+  _ArticleView({
+    Key key,
+    this.articleList,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(top: 20, left: 20),
+            child: Text(
+              '封面故事',
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ]..addAll(articleList.map((model) => _cellView(model))),
+      ),
+    );
+  }
+
+  Widget _cellView(_ArticleModel model) {
+    String detailText;
+    if (model.from == null) {
+      detailText = '${model.agreeCount} 赞 · ${model.discussCount} 评论';
+    } else {
+      detailText = model.from;
+    }
+
+    TextStyle titleStyle = TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w600,
+    );
+    TextStyle detailStyle = TextStyle(
+      color: Colors.black45,
+      fontSize: 12,
+    );
+
+    List<Widget> children;
+    if (model.subTitle == null) {
+      double ratio = 748 / 311;
+      return Container(
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.fromLTRB(margin, 16, margin, 9),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AspectRatio(
+                    aspectRatio: ratio,
+                    child: Image.asset(model.image),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 9),
+                    child: Text(model.title, style: titleStyle),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 6),
+                    child: Text(detailText, style: detailStyle),
+                  ),
+                ],
+              ),
+            ),
+            Divider(color: Color(0xFFF0F0F0)),
+          ],
+        ),
+      );
+    } else {
+      double ratio = 190 / 132;
+      return Container(
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.fromLTRB(margin, 6, margin, 9),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    child: Text(model.title, style: titleStyle),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 6),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  child: Text(
+                                    model.subTitle,
+                                    style: TextStyle(
+                                      height: 1.45,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 7),
+                                  child: Text(detailText, style: detailStyle),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 16),
+                          width: 95,
+                          height: 66,
+                          child: Image.asset(model.image),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Divider(color: Color(0xFFF0F0F0)),
+          ],
+        ),
+      );
+    }
+  }
+}
+
+class _BottomView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
 
