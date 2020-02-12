@@ -269,11 +269,8 @@ class _FindMoreView extends StatelessWidget {
           Container(
             width: 78,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Container(),
-                ),
                 Container(
                   height: 30,
                   decoration: BoxDecoration(
@@ -291,16 +288,13 @@ class _FindMoreView extends StatelessWidget {
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    margin: EdgeInsets.only(top: 2),
-                    child: Text(
-                      model.isFree ? '盐选会员免费' : '',
-                      style: TextStyle(
-                        color: Colors.black38,
-                        fontSize: 12,
-                      ),
+                Container(
+                  margin: EdgeInsets.only(top: 2),
+                  child: Text(
+                    model.isFree ? '盐选会员免费' : '',
+                    style: TextStyle(
+                      color: Colors.black38,
+                      fontSize: 12,
                     ),
                   ),
                 ),

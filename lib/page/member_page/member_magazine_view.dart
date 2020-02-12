@@ -122,7 +122,6 @@ class _ArticleView extends StatelessWidget {
       fontSize: 12,
     );
 
-    List<Widget> children;
     if (model.subTitle == null) {
       double ratio = 748 / 311;
       return Container(

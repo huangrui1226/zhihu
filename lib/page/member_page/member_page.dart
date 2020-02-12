@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zhihu/page/member_page/member_lecture_view.dart';
 import 'package:zhihu/page/member_page/member_magazine_view.dart';
 import 'package:zhihu/page/member_page/member_reading_view.dart';
 import 'package:zhihu/page/member_page/member_recommand_view.dart';
@@ -28,7 +29,7 @@ class _MemberPageState extends State<MemberPage> with TickerProviderStateMixin {
       MemberRecommandView(),
       MemberReadingView(),
       MemberMagazineView(),
-      MemberRecommandView(),
+      MemberLectureView(),
       MemberRecommandView(),
     ];
     tabController = TabController(
