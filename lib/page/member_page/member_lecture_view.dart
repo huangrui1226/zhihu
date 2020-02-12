@@ -27,7 +27,7 @@ class _MemberLectureViewState extends State<MemberLectureView> {
           _ShiftView(viewModel),
           Divider(height: 1, color: Color.fromARGB(255, 244, 245, 246)),
           _CategoryView(viewModel),
-          _BookView(bookList: viewModel.bookList),
+          _BookView(viewModel),
         ],
       ),
     );
@@ -50,13 +50,17 @@ class _ShiftView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String title;
+    Color categoryColor;
     if (viewModel.selectCategory == null) {
       title = '全部分类';
+      categoryColor = viewModel.isCategoryExpand == true ? goldColor : Colors.black;
     } else {
       if (viewModel.selectCategory.title == '全部分类') {
         title = viewModel.selectCategory.title;
+        categoryColor = viewModel.isCategoryExpand == true ? goldColor : Colors.black;
       } else {
         title = '全部' + viewModel.selectCategory.title;
+        categoryColor = goldColor;
       }
     }
     return Container(
@@ -67,28 +71,71 @@ class _ShiftView extends StatelessWidget {
         child: Row(
           children: <Widget>[
             Expanded(
-              child: Row(
-                children: <Widget>[
-                  Text(title, style: TextStyle(color: title == '全部分类' ? Colors.black : goldColor, fontSize: 15)),
-                  Icon(Icons.arrow_drop_down, color: title == '全部分类' ? Colors.black : goldColor),
-                ],
-              ),
-            ),
-            Container(
-              width: 48,
-              child: Text(
-                '综合',
-                style: TextStyle(
-                  color: viewModel.isComprehensiveViewExpand == true ? goldColor : Colors.black,
+              child: GestureDetector(
+                onTap: onCategoryClick,
+                child: Container(
+                  child: Row(
+                    children: <Widget>[
+                      Text(title, style: TextStyle(color: categoryColor, fontSize: 15)),
+                      Icon(viewModel.isCategoryExpand == true ? Icons.arrow_drop_up : Icons.arrow_drop_down, color: categoryColor),
+                    ],
+                  ),
                 ),
               ),
             ),
-            Container(
-              width: 48,
-              child: Text(
-                '筛选',
-                style: TextStyle(
-                  color: viewModel.isShiftViewExpand == true ? goldColor : Colors.black,
+            GestureDetector(
+              onTap: onComprehensiveClick,
+              child: Container(
+                color: Colors.transparent,
+                margin: EdgeInsets.only(right: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Image.asset(
+                      'assets/images/member/member_lecture/lecture_comprehensive.png',
+                      color: viewModel.isComprehensiveViewExpand == true ? goldColor : Colors.black38,
+                      colorBlendMode: BlendMode.overlay,
+                      width: 14,
+                      height: 14,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 4),
+                      child: Text(
+                        '综合',
+                        style: TextStyle(
+                          color: viewModel.isComprehensiveViewExpand == true ? goldColor : Colors.black38,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: onShiftClick,
+              child: Container(
+                color: Colors.transparent,
+                child: Row(
+                  children: <Widget>[
+                    Image.asset(
+                      'assets/images/member/member_lecture/lecture_shift.png',
+                      color: viewModel.isShiftViewExpand == true ? goldColor : Colors.black38,
+                      colorBlendMode: BlendMode.overlay,
+                      width: 14,
+                      height: 14,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: 4),
+                      child: Text(
+                        '筛选',
+                        style: TextStyle(
+                          color: viewModel.isShiftViewExpand == true ? goldColor : Colors.black38,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -96,6 +143,21 @@ class _ShiftView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  onComprehensiveClick() {
+    viewModel.isComprehensiveViewExpand = true;
+    viewModel.state.setState(() {});
+  }
+
+  onShiftClick() {
+    viewModel.isShiftViewExpand = true;
+    viewModel.state.setState(() {});
+  }
+
+  onCategoryClick() {
+    viewModel.isCategoryExpand = !viewModel.isCategoryExpand;
+    viewModel.state.setState(() {});
   }
 }
 
@@ -148,11 +210,11 @@ class __CategoryViewState extends State<_CategoryView> {
 }
 
 class _BookView extends StatelessWidget {
-  final List<BookGoodModel> bookList;
+  final MemberLectureViewModel viewModel;
 
-  _BookView({
+  _BookView(
+    this.viewModel, {
     Key key,
-    this.bookList = const [],
   }) : super(key: key);
 
   @override
@@ -160,7 +222,7 @@ class _BookView extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: 1.5),
       child: Column(
-        children: bookList.map((model) => _cellView(model)).toList(),
+        children: viewModel.bookList.map((model) => _cellView(model)).toList(),
       ),
     );
   }

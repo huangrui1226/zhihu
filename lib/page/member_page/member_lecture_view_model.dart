@@ -6,16 +6,38 @@ class MemberLectureViewModel {
   List<BookGoodModel> bookList;
   List<CategoryModel> categoryList;
   CategoryModel selectCategory;
-  bool isComprehensiveViewExpand; // 综合下拉框
-  bool isShiftViewExpand; // 筛选下拉框
+  bool isCategoryExpand; // 分类下拉框
+
+  bool _isComprehensiveViewExpand; // 综合下拉框
+  bool get isComprehensiveViewExpand {
+    return _isComprehensiveViewExpand;
+  }
+  set isComprehensiveViewExpand(bool val) {
+    _isComprehensiveViewExpand = val;
+    if (val == true) {
+      _isShiftViewExpand = false;
+    }
+  }
+
+  bool _isShiftViewExpand; // 筛选下拉框
+  bool get isShiftViewExpand {
+    return _isShiftViewExpand;
+  }
+  set isShiftViewExpand(bool val) {
+    _isShiftViewExpand = val;
+    if (val == true) {
+      _isComprehensiveViewExpand = false;
+    }
+  }
 
   MemberLectureViewModel.init({
     this.state,
   }) {
     bookList = BookGoodModel.test();
     categoryList = CategoryModel.test();
-    isComprehensiveViewExpand = false;
-    isShiftViewExpand = false;
+    _isComprehensiveViewExpand = false;
+    _isShiftViewExpand = false;
+    isCategoryExpand = false;
   }
 }
 
