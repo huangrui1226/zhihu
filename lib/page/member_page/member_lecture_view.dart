@@ -10,6 +10,7 @@ class MemberLectureView extends StatefulWidget {
 class _MemberLectureViewState extends State<MemberLectureView> {
   List<_BookGoodModel> bookList;
   List<_CategoryModel> categoryList;
+  _CategoryModel selectCategory;
 
   @override
   void initState() {
@@ -25,11 +26,20 @@ class _MemberLectureViewState extends State<MemberLectureView> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           _ShiftView(),
-          _CategoryView(categoryList: categoryList),
+          _CategoryView(
+            categoryList: categoryList,
+            selectCategory: selectCategory,
+            selectBlock: (model) => onCategoryClicked(model),
+          ),
           _BookView(bookList: bookList),
         ],
       ),
     );
+  }
+
+  onCategoryClicked(_CategoryModel model) {
+    selectCategory = model;
+    setState(() {});
   }
 }
 
@@ -49,8 +59,15 @@ class _ShiftView extends StatelessWidget {
 
 class _CategoryView extends StatefulWidget {
   final List<_CategoryModel> categoryList;
+  final _CategoryModel selectCategory;
+  final _CategoryModel Function(_CategoryModel model) selectBlock;
 
-  _CategoryView({Key key, this.categoryList,}) : super(key: key);
+  _CategoryView({
+    Key key,
+    this.categoryList,
+    this.selectCategory,
+    this.selectBlock,
+  }) : super(key: key);
 
   @override
   __CategoryViewState createState() => __CategoryViewState();
@@ -64,22 +81,29 @@ class __CategoryViewState extends State<_CategoryView> {
       child: ListView(
         padding: EdgeInsets.symmetric(horizontal: 15),
         scrollDirection: Axis.horizontal,
-        children: widget.categoryList.map((model) => _cellView(model)).toList(),
+        children: widget.categoryList.map((model) => _cellView(model, widget.selectBlock)).toList(),
       ),
     );
   }
 
-  Widget _cellView(_CategoryModel model) {
-    return Container(
-      height: 30,
-      width: 68,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: Color.fromARGB(255, 245, 246, 247),
-        borderRadius: BorderRadius.circular(15),
+  Widget _cellView(_CategoryModel model, block) {
+    Color selectColor = Color.fromRGBO(203, 153, 79, 1.0);
+
+    return GestureDetector(
+      onTap: () {
+        block(model);
+      },
+      child: Container(
+        height: 30,
+        width: 68,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Color.fromARGB(255, 245, 246, 247),
+          borderRadius: BorderRadius.circular(15),
+        ),
+        margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
+        child: Text(model.title, style: TextStyle(color: widget.selectCategory == model ? selectColor : Colors.black)),
       ),
-      margin: EdgeInsets.fromLTRB(5, 10, 5, 10),
-      child: Text(model.title),
     );
   }
 }
@@ -279,7 +303,9 @@ class _BookGoodModel {
 class _CategoryModel {
   String title;
 
-  _CategoryModel({this.title,});
+  _CategoryModel({
+    this.title,
+  });
 
   _CategoryModel.fromJson(Map json) {
     title = json['title'];
