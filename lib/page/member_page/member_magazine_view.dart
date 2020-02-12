@@ -77,7 +77,30 @@ class _ArticleView extends StatelessWidget {
               ),
             ),
           ),
-        ]..addAll(articleList.map((model) => _cellView(model))),
+        ]
+          ..addAll(List.generate(articleList.length * 2 - 1, (index) {
+            if (index.isOdd) {
+              return Container(height: 1, color: Color(0xFFF0F0F0), margin: EdgeInsets.symmetric(horizontal: margin));
+            } else {
+              return _cellView(articleList[index ~/ 2]);
+            }
+          }))
+          ..addAll([
+            Container(
+              height: 64,
+              padding: EdgeInsets.only(bottom: 20),
+              child: Center(
+                child: Text(
+                  '- 每日更新 15 篇文章 - 展示最近三天更新 -',
+                  style: TextStyle(
+                    color: Colors.black45,
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            ),
+            Image.asset('assets/images/member/member_magazine/bottom_view.png'),
+          ]),
       ),
     );
   }
@@ -85,7 +108,7 @@ class _ArticleView extends StatelessWidget {
   Widget _cellView(_ArticleModel model) {
     String detailText;
     if (model.from == null) {
-      detailText = '${model.agreeCount} 赞 · ${model.discussCount} 评论';
+      detailText = '${model.agreeCount} 赞' + (model.discussCount != null ? ' · ${model.discussCount} 评论' : '');
     } else {
       detailText = model.from;
     }
@@ -103,86 +126,71 @@ class _ArticleView extends StatelessWidget {
     if (model.subTitle == null) {
       double ratio = 748 / 311;
       return Container(
+        margin: EdgeInsets.fromLTRB(margin, 16, margin, 9),
         child: Column(
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.fromLTRB(margin, 16, margin, 9),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AspectRatio(
-                    aspectRatio: ratio,
-                    child: Image.asset(model.image),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 9),
-                    child: Text(model.title, style: titleStyle),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 6),
-                    child: Text(detailText, style: detailStyle),
-                  ),
-                ],
-              ),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AspectRatio(
+              aspectRatio: ratio,
+              child: Image.asset(model.image),
             ),
-            Divider(color: Color(0xFFF0F0F0)),
+            Container(
+              margin: EdgeInsets.only(top: 9),
+              child: Text(model.title, style: titleStyle),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 6),
+              child: Text(detailText, style: detailStyle),
+            ),
           ],
         ),
       );
     } else {
-      double ratio = 190 / 132;
       return Container(
+        margin: EdgeInsets.fromLTRB(margin, 16, margin, 16),
         child: Column(
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Container(
-              margin: EdgeInsets.fromLTRB(margin, 6, margin, 9),
-              child: Column(
+              child: Text(model.title, style: titleStyle),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 6),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    child: Text(model.title, style: titleStyle),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 6),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                          child: Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  child: Text(
-                                    model.subTitle,
-                                    style: TextStyle(
-                                      height: 1.45,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(top: 7),
-                                  child: Text(detailText, style: detailStyle),
-                                ),
-                              ],
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            child: Text(
+                              model.subTitle,
+                              style: TextStyle(
+                                height: 1.45,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(left: 16),
-                          width: 95,
-                          height: 66,
-                          child: Image.asset(model.image),
-                        ),
-                      ],
+                          Container(
+                            margin: EdgeInsets.only(top: 7),
+                            child: Text(detailText, style: detailStyle),
+                          ),
+                        ],
+                      ),
                     ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 16),
+                    width: 95,
+                    height: 66,
+                    child: Image.asset(model.image),
                   ),
                 ],
               ),
             ),
-            Divider(color: Color(0xFFF0F0F0)),
           ],
         ),
       );
