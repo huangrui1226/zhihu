@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:zhihu/model/category_model.dart';
+
+enum ExpandViewType {
+  category,
+  comprehensive,
+  shift,
+}
 
 class MemberLectureViewModel {
   State state;
@@ -6,7 +13,19 @@ class MemberLectureViewModel {
   List<BookGoodModel> bookList;
   List<CategoryModel> categoryList;
   CategoryModel selectCategory;
-  bool isCategoryExpand; // 分类下拉框
+  ExpandViewType type; // 下拉框类型
+
+  bool _isCategoryExpand; // 分类下拉框
+  bool get isCategoryExpand {
+    return _isCategoryExpand;
+  }
+  set isCategoryExpand(bool val) {
+    _isCategoryExpand = val;
+    if (_isCategoryExpand == true) {
+      _isComprehensiveViewExpand = false;
+      _isShiftViewExpand = false;
+    }
+  }
 
   bool _isComprehensiveViewExpand; // 综合下拉框
   bool get isComprehensiveViewExpand {
@@ -16,6 +35,7 @@ class MemberLectureViewModel {
     _isComprehensiveViewExpand = val;
     if (val == true) {
       _isShiftViewExpand = false;
+      _isCategoryExpand = false;
     }
   }
 
@@ -27,6 +47,7 @@ class MemberLectureViewModel {
     _isShiftViewExpand = val;
     if (val == true) {
       _isComprehensiveViewExpand = false;
+      _isCategoryExpand = false;
     }
   }
 
@@ -34,7 +55,7 @@ class MemberLectureViewModel {
     this.state,
   }) {
     bookList = BookGoodModel.test();
-    categoryList = CategoryModel.test();
+    categoryList = CategoryModel.categoryList();
     _isComprehensiveViewExpand = false;
     _isShiftViewExpand = false;
     isCategoryExpand = false;
@@ -129,42 +150,6 @@ class BookGoodModel {
         price: 18,
         isFree: true,
       ),
-    ];
-  }
-}
-
-class CategoryModel {
-  String title;
-
-  CategoryModel({
-    this.title,
-  });
-
-  CategoryModel.fromJson(Map json) {
-    title = json['title'];
-  }
-
-  Map<String, dynamic> toJson() {
-    Map json = Map();
-    json['title'] = title;
-    return json;
-  }
-
-  static List<CategoryModel> test() {
-    return [
-      CategoryModel(title: '全部分类'),
-      CategoryModel(title: '科学'),
-      CategoryModel(title: '前沿'),
-      CategoryModel(title: '财商'),
-      CategoryModel(title: '文学'),
-      CategoryModel(title: '艺术'),
-      CategoryModel(title: '社科'),
-      CategoryModel(title: '成长'),
-      CategoryModel(title: '职人'),
-      CategoryModel(title: '通关'),
-      CategoryModel(title: '乐活'),
-      CategoryModel(title: '亲密'),
-      CategoryModel(title: '亲子'),
     ];
   }
 }

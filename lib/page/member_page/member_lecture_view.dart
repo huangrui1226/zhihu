@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:zhihu/config/colos.dart';
+import 'package:zhihu/model/category_model.dart';
 import 'package:zhihu/page/member_page/member_lecture_view_model.dart';
 
 double _margin = 20.0;
@@ -21,13 +23,20 @@ class _MemberLectureViewState extends State<MemberLectureView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Stack(
         children: <Widget>[
-          _ShiftView(viewModel),
-          Divider(height: 1, color: Color.fromARGB(255, 244, 245, 246)),
-          _CategoryView(viewModel),
-          _BookView(viewModel),
+          Positioned.fill(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                _ShiftView(viewModel),
+                Divider(height: 1, color: Color.fromARGB(255, 244, 245, 246)),
+                _CategoryView(viewModel),
+                _BookView(viewModel),
+              ],
+            ),
+          ),
+          viewModel.type != null ? _ExpandeView(type: viewModel.type, viewModel: viewModel) : Container(),
         ],
       ),
     );
@@ -146,17 +155,20 @@ class _ShiftView extends StatelessWidget {
   }
 
   onComprehensiveClick() {
-    viewModel.isComprehensiveViewExpand = true;
+    viewModel.isComprehensiveViewExpand = !viewModel.isComprehensiveViewExpand;
+    viewModel.type = viewModel.isComprehensiveViewExpand == true ? ExpandViewType.comprehensive : null;
     viewModel.state.setState(() {});
   }
 
   onShiftClick() {
-    viewModel.isShiftViewExpand = true;
+    viewModel.isShiftViewExpand = !viewModel.isShiftViewExpand;
+    viewModel.type = viewModel.isShiftViewExpand == true ? ExpandViewType.shift : null;
     viewModel.state.setState(() {});
   }
 
   onCategoryClick() {
     viewModel.isCategoryExpand = !viewModel.isCategoryExpand;
+    viewModel.type = viewModel.isCategoryExpand == true ? ExpandViewType.category : null;
     viewModel.state.setState(() {});
   }
 }
@@ -297,6 +309,308 @@ class _BookView extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.black38,
                       fontSize: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExpandeView extends StatelessWidget {
+  final ExpandViewType type;
+  final MemberLectureViewModel viewModel;
+
+  _ExpandeView({
+    Key key,
+    this.type,
+    this.viewModel,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Widget child;
+    switch (type) {
+      case ExpandViewType.category:
+        child = _CategoryDetailView(viewModel: viewModel);
+        break;
+      case ExpandViewType.comprehensive:
+        child = _ComprehensiveDetailView(viewModel: viewModel);
+        break;
+      case ExpandViewType.shift:
+        child = _ShiftDetailView(viewModel: viewModel);
+        break;
+    }
+
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          top: 40,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          child: GestureDetector(
+            onTap: () {
+              viewModel.type = null;
+              viewModel.isComprehensiveViewExpand = false;
+              viewModel.isShiftViewExpand = false;
+              viewModel.isCategoryExpand = false;
+              viewModel.state.setState(() {});
+            },
+            child: Container(color: Colors.transparent),
+          ),
+        ),
+        Positioned(
+          top: 40,
+          left: 0,
+          right: 0,
+          child: child,
+        ),
+      ],
+    );
+  }
+}
+
+class _CategoryDetailView extends StatefulWidget {
+  final MemberLectureViewModel viewModel;
+
+  _CategoryDetailView({
+    Key key,
+    this.viewModel,
+  }) : super(key: key);
+
+  @override
+  __CategoryDetailViewState createState() => __CategoryDetailViewState();
+}
+
+class __CategoryDetailViewState extends State<_CategoryDetailView> {
+  int selectIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Color.fromARGB(20, 0, 0, 0),
+            offset: Offset(0, 8),
+            blurRadius: 4,
+          ),
+        ],
+      ),
+      height: 340,
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            flex: 263,
+            child: Container(
+              child: ListView(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                children: List.generate(widget.viewModel.categoryList.length, (index) {
+                  return _cellView(widget.viewModel.categoryList[index], index == selectIndex);
+                }),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 565,
+            child: Container(
+              color: Color.fromARGB(255, 245, 246, 247),
+              child: ListView(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                children: List.generate(widget.viewModel.categoryList[selectIndex].subCategory.length, (index) {
+                  return _secondCellView(widget.viewModel.categoryList[selectIndex].subCategory[index]);
+                }),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _cellView(CategoryModel model, bool isSelected) {
+    return GestureDetector(
+      onTap: () {
+        selectIndex = widget.viewModel.categoryList.indexOf(model);
+        setState(() {});
+      },
+      child: Container(
+        padding: EdgeInsets.only(left: 20),
+        height: 45,
+        alignment: Alignment.centerLeft,
+        child: Text(model.title, style: TextStyle(fontSize: 15)),
+        color: isSelected == true ? Color.fromARGB(255, 245, 246, 247) : Colors.white,
+      ),
+    );
+  }
+
+  Widget _secondCellView(CategoryModel model) {
+    return GestureDetector(
+      onTap: () {},
+      child: Container(
+        padding: EdgeInsets.only(left: 20),
+        height: 45,
+        alignment: Alignment.centerLeft,
+        color: Colors.transparent,
+        child: Text(model.title),
+      ),
+    );
+  }
+}
+
+class _ComprehensiveDetailView extends StatefulWidget {
+  final MemberLectureViewModel viewModel;
+
+  _ComprehensiveDetailView({
+    Key key,
+    this.viewModel,
+  }) : super(key: key);
+
+  @override
+  __ComprehensiveDetailViewState createState() => __ComprehensiveDetailViewState();
+}
+
+class __ComprehensiveDetailViewState extends State<_ComprehensiveDetailView> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      height: 170,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Color.fromARGB(20, 0, 0, 0),
+            offset: Offset(0, 8),
+            blurRadius: 4,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List.generate(3, (index) {
+          String title;
+          switch (index) {
+            case 0:
+              title = '综合';
+              break;
+            case 1:
+              title = '最新';
+              break;
+            case 2:
+              title = '最多人感兴趣';
+              break;
+          }
+          return Container(
+            height: 50,
+            padding: EdgeInsets.only(left: 20),
+            alignment: Alignment.centerLeft,
+            child: Text(title, style: TextStyle(fontSize: 16)),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class _ShiftDetailView extends StatefulWidget {
+  final MemberLectureViewModel viewModel;
+
+  _ShiftDetailView({
+    Key key,
+    this.viewModel,
+  }) : super(key: key);
+
+  @override
+  __ShiftDetailViewState createState() => __ShiftDetailViewState();
+}
+
+class __ShiftDetailViewState extends State<_ShiftDetailView> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      height: 161,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Color.fromARGB(20, 0, 0, 0),
+            offset: Offset(0, 8),
+            blurRadius: 4,
+          ),
+        ],
+      ),
+      child: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(top: 20),
+            child: Text('盐选会员权益', style: TextStyle(fontSize: 15)),
+            alignment: Alignment.centerLeft,
+          ),
+          Expanded(
+            child: Container(
+              child: Row(
+              children: List.generate(3, (index) {
+                List<String> title = ['会员免费', '会员折扣', '会员专享'];
+                  return Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 245, 246, 247),
+                      borderRadius: BorderRadius.circular(15.5),
+                    ),
+                    width: 81,
+                    height: 31,
+                    child: Text(title[index], style: TextStyle(
+                      color: Colors.black45
+                    ),),
+                  );
+              }),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 10),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 245, 246, 247),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    height: 39,
+                    alignment: Alignment.center,
+                    child: Text(
+                      '清空',
+                      style: TextStyle(
+                        color: goldColor,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(width: 10),
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: goldColor,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    height: 39,
+                    alignment: Alignment.center,
+                    child: Text(
+                      '确定',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
