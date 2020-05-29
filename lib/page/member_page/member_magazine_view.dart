@@ -35,8 +35,8 @@ class _MemberMagazineViewState extends State<MemberMagazineView> {
 }
 
 class _BannerView extends StatelessWidget {
-  double ratio = 768 / 200;
-  double margin = 15;
+  final double ratio = 768 / 200;
+  final double margin = 15;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class _BannerView extends StatelessWidget {
 
 class _ArticleView extends StatelessWidget {
   final List<_ArticleModel> articleList;
-  double margin = 20;
+  final double margin = 20;
 
   _ArticleView({
     Key key,

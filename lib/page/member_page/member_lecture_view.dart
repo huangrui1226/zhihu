@@ -157,18 +157,21 @@ class _ShiftView extends StatelessWidget {
   onComprehensiveClick() {
     viewModel.isComprehensiveViewExpand = !viewModel.isComprehensiveViewExpand;
     viewModel.type = viewModel.isComprehensiveViewExpand == true ? ExpandViewType.comprehensive : null;
+    // ignore: invalid_use_of_protected_member
     viewModel.state.setState(() {});
   }
 
   onShiftClick() {
     viewModel.isShiftViewExpand = !viewModel.isShiftViewExpand;
     viewModel.type = viewModel.isShiftViewExpand == true ? ExpandViewType.shift : null;
+    // ignore: invalid_use_of_protected_member
     viewModel.state.setState(() {});
   }
 
   onCategoryClick() {
     viewModel.isCategoryExpand = !viewModel.isCategoryExpand;
     viewModel.type = viewModel.isCategoryExpand == true ? ExpandViewType.category : null;
+    // ignore: invalid_use_of_protected_member
     viewModel.state.setState(() {});
   }
 }
@@ -359,6 +362,7 @@ class _ExpandeView extends StatelessWidget {
               viewModel.isComprehensiveViewExpand = false;
               viewModel.isShiftViewExpand = false;
               viewModel.isCategoryExpand = false;
+              // ignore: invalid_use_of_protected_member
               viewModel.state.setState(() {});
             },
             child: Container(color: Colors.transparent),
@@ -557,8 +561,8 @@ class __ShiftDetailViewState extends State<_ShiftDetailView> {
           Expanded(
             child: Container(
               child: Row(
-              children: List.generate(3, (index) {
-                List<String> title = ['会员免费', '会员折扣', '会员专享'];
+                children: List.generate(3, (index) {
+                  List<String> title = ['会员免费', '会员折扣', '会员专享'];
                   return Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
@@ -567,11 +571,12 @@ class __ShiftDetailViewState extends State<_ShiftDetailView> {
                     ),
                     width: 81,
                     height: 31,
-                    child: Text(title[index], style: TextStyle(
-                      color: Colors.black45
-                    ),),
+                    child: Text(
+                      title[index],
+                      style: TextStyle(color: Colors.black45),
+                    ),
                   );
-              }),
+                }),
               ),
             ),
           ),

@@ -80,23 +80,20 @@ class _CategoryView extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  BuildContext rootContext;
-
   @override
   Widget build(BuildContext context) {
-    rootContext = context;
     return Container(
       margin: EdgeInsets.all(_margin),
       child: Row(
           children: List.generate(modelList.length, (index) {
         _CategoryModel model = modelList[index];
-        return _cellView(model);
+        return _cellView(model, context);
       })),
     );
   }
 
-  Widget _cellView(_CategoryModel model) {
-    double length = (MediaQuery.of(rootContext).size.width - _margin * 6) / 5;
+  Widget _cellView(_CategoryModel model, BuildContext context) {
+    double length = (MediaQuery.of(context).size.width - _margin * 6) / 5;
     return Expanded(
       flex: 1,
       child: Container(
@@ -836,7 +833,7 @@ class _PopListView extends StatelessWidget {
             ),
           ),
           Container(
-            height: height+16,
+            height: height + 16,
             child: GridView(
               padding: EdgeInsets.only(left: _margin, right: _margin, bottom: 16),
               scrollDirection: Axis.horizontal,

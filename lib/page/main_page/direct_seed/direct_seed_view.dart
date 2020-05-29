@@ -64,35 +64,35 @@ class _CellView extends StatelessWidget {
                 model.isSeeding == true
                     ? Container()
                     : Positioned(
-                  left: 0,
-                  top: 0,
-                  width: 38,
-                  height: 18,
-                  child: Container(
-                    child: Center(
-                      child: Text(
-                        '预告',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w400,
+                        left: 0,
+                        top: 0,
+                        width: 38,
+                        height: 18,
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              '预告',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [Color(0xFF383ABD), Color(0xFF65A9FD)],
+                            ),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(5),
+                              bottomRight: Radius.circular(5),
+                            ),
+                          ),
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [Color(0xFF383ABD), Color(0xFF65A9FD)],
-                      ),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(5),
-                        bottomRight: Radius.circular(5),
-                      ),
-                    ),
-                  ),
-                ),
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -157,14 +157,14 @@ class _CellView extends StatelessWidget {
           ),
           model.subTitle != ''
               ? Container(
-            child: Text(
-              model.subTitle,
-              style: TextStyle(
-                color: Colors.black45,
-                fontSize: 12,
-              ),
-            ),
-          )
+                  child: Text(
+                    model.subTitle,
+                    style: TextStyle(
+                      color: Colors.black45,
+                      fontSize: 12,
+                    ),
+                  ),
+                )
               : Container(),
         ],
       ),
@@ -227,10 +227,7 @@ class MySliverGridDelegateWithFixedCrossAxisCount extends SliverGridDelegate {
 
   @override
   bool shouldRelayout(MySliverGridDelegateWithFixedCrossAxisCount oldDelegate) {
-    return oldDelegate.crossAxisCount != crossAxisCount ||
-        oldDelegate.mainAxisSpacing != mainAxisSpacing ||
-        oldDelegate.crossAxisSpacing != crossAxisSpacing ||
-        oldDelegate.childAspectRatio != childAspectRatio;
+    return oldDelegate.crossAxisCount != crossAxisCount || oldDelegate.mainAxisSpacing != mainAxisSpacing || oldDelegate.crossAxisSpacing != crossAxisSpacing || oldDelegate.childAspectRatio != childAspectRatio;
   }
 }
 

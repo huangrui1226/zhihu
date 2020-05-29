@@ -63,23 +63,20 @@ class _CategoryView extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  BuildContext rootContext;
-
   @override
   Widget build(BuildContext context) {
-    rootContext = context;
     return Container(
       margin: EdgeInsets.all(_margin),
       child: Row(
           children: List.generate(modelList.length, (index) {
         _CategoryModel model = modelList[index];
-        return _cellView(model);
+        return _cellView(model, context);
       })),
     );
   }
 
-  Widget _cellView(_CategoryModel model) {
-    double length = (MediaQuery.of(rootContext).size.width - _margin * 6) / 5;
+  Widget _cellView(_CategoryModel model, BuildContext context) {
+    double length = (MediaQuery.of(context).size.width - _margin * 6) / 5;
     return Expanded(
       flex: 1,
       child: Container(
@@ -182,12 +179,21 @@ class _SectionView extends StatelessWidget {
           ),
           Container(
             margin: EdgeInsets.only(top: 6),
-            child: Text(model.title, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400), maxLines: 2, overflow: TextOverflow.ellipsis),
+            child: Text(
+              model.title,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           Container(
             margin: EdgeInsets.only(top: 4),
-            child: Text(model.subTitle,
-                style: TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.w500), maxLines: 1, overflow: TextOverflow.ellipsis),
+            child: Text(
+              model.subTitle,
+              style: TextStyle(color: Colors.black38, fontSize: 13, fontWeight: FontWeight.w500),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),
@@ -236,7 +242,7 @@ class _FindMoreView extends StatelessWidget {
           AspectRatio(
             aspectRatio: ratio,
             child: Image.asset(
-              model.imagePaht,
+              model.imagePath,
 //              fit: BoxFit.fill,
             ),
           ),
@@ -862,7 +868,7 @@ class _BookModel {
 }
 
 class _BookGoodModel {
-  String imagePaht;
+  String imagePath;
   String title;
   String author;
   String subTitle;
@@ -870,7 +876,7 @@ class _BookGoodModel {
   bool isFree;
 
   _BookGoodModel({
-    this.imagePaht,
+    this.imagePath,
     this.title,
     this.author,
     this.subTitle,
@@ -879,7 +885,7 @@ class _BookGoodModel {
   });
 
   _BookGoodModel.fromJson(Map json) {
-    imagePaht = json['imagePath'];
+    imagePath = json['imagePath'];
     title = json['title'];
     author = json['author'];
     subTitle = json['subTitle'];
@@ -889,7 +895,7 @@ class _BookGoodModel {
 
   Map<String, dynamic> toJson() {
     Map json = Map();
-    json['imagePath'] = imagePaht;
+    json['imagePath'] = imagePath;
     json['title'] = title;
     json['author'] = author;
     json['subTitle'] = subTitle;
@@ -902,7 +908,7 @@ class _BookGoodModel {
     String base = 'assets/images/member/member_reading/';
     return [
       _BookGoodModel(
-        imagePaht: base + 'book_good_image_0.png',
+        imagePath: base + 'book_good_image_0.png',
         title: '笑场',
         author: '李诞',
         subTitle: '高手从来不拔刀，真僧只说家常事',
@@ -910,7 +916,7 @@ class _BookGoodModel {
         isFree: true,
       ),
       _BookGoodModel(
-        imagePaht: base + 'book_good_image_1.png',
+        imagePath: base + 'book_good_image_1.png',
         title: 'Linux命令行与shell脚本编程大全',
         author: 'Richard Blum',
         subTitle: '一本关于Linus命令行与shell脚本编程的书',
@@ -918,7 +924,7 @@ class _BookGoodModel {
         isFree: false,
       ),
       _BookGoodModel(
-        imagePaht: base + 'book_good_image_2.png',
+        imagePath: base + 'book_good_image_2.png',
         title: '白话区块链',
         author: '蒋勇',
         subTitle: '涵盖区块链底层技术，典型业务场景',
@@ -926,7 +932,7 @@ class _BookGoodModel {
         isFree: true,
       ),
       _BookGoodModel(
-        imagePaht: base + 'book_good_image_3.png',
+        imagePath: base + 'book_good_image_3.png',
         title: '聪明人用方格笔记本',
         author: '高桥政史',
         subTitle: '开始新的笔记之路，开启新的人生旅途',
@@ -934,7 +940,7 @@ class _BookGoodModel {
         isFree: true,
       ),
       _BookGoodModel(
-        imagePaht: base + 'book_good_image_4.png',
+        imagePath: base + 'book_good_image_4.png',
         title: 'Nginx完全开发指南：使用C、C++和OpenResty',
         author: '罗剑锋',
         subTitle: '一个近乎「全能」的服务器软件开发书',
@@ -942,7 +948,7 @@ class _BookGoodModel {
         isFree: true,
       ),
       _BookGoodModel(
-        imagePaht: base + 'book_good_image_5.png',
+        imagePath: base + 'book_good_image_5.png',
         title: '浴缸里的惊叹：256道让你恍然大悟的趣题',
         author: '顾森',
         subTitle: '一个疯狂数学爱好者的数学笔记。',

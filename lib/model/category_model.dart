@@ -1,12 +1,13 @@
-import 'package:flutter/foundation.dart';
-
 class CategoryModel {
   String title;
   List<CategoryModel> subCategory;
 
-  CategoryModel({this.title, this.subCategory,});
+  CategoryModel({
+    this.title,
+    this.subCategory,
+  });
 
-  CategoryModel.fronJson(Map json) {
+  CategoryModel.fromJson(Map json) {
     title = json['title'];
     subCategory = json['subCategory'];
   }
@@ -15,6 +16,7 @@ class CategoryModel {
     Map json = Map();
     json['title'] = title;
     json['subCategory'] = subCategory;
+    return json;
   }
 
   static List<CategoryModel> categoryList() {
